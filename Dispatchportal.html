@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Variant D — Dispatch Board | Dispatch Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{font-family:var(--font-h);line-height:1.25}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--link,var(--primary))}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+svg.ic{flex:none;display:block}
+.grow{flex:1}
+.muted{color:var(--muted)}
+.skip{position:absolute;left:-999px;top:8px;z-index:99;padding:10px 14px;background:var(--primary);color:var(--on-primary);border:0;border-radius:6px;font-weight:600}
+.skip:focus{left:8px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid transparent;border-radius:var(--radius-sm);font-weight:600;font-size:14px;background:none;white-space:nowrap;text-decoration:none}
+.btn-primary{background:var(--primary);color:var(--on-primary);min-height:44px}
+.btn-ghost{border-color:var(--line-strong,var(--line));background:var(--field,var(--surface));color:var(--ink)}
+.btn-danger{background:var(--danger);color:var(--on-danger,#fff);min-height:44px}
+.btn-sm{min-height:34px;padding:0 12px;font-size:13px}
+.btn-block{width:100%}
+.btn[disabled],.pg[disabled]{opacity:.45;cursor:not-allowed}
+.iconbtn{display:inline-grid;place-items:center;width:36px;height:36px;border:0;border-radius:var(--radius-sm);background:none;color:var(--muted);position:relative;flex:none}
+.iconbtn:hover{background:var(--hover);color:var(--ink)}
+.badge{position:absolute;top:3px;right:3px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--danger);color:var(--on-danger,#fff);font-size:10px;font-weight:700;line-height:16px;text-align:center}
+
+.input{width:100%;min-height:40px;padding:8px 12px;border:1px solid var(--line-strong,var(--line));border-radius:var(--radius-sm);background:var(--field,var(--surface));color:var(--ink)}
+.input::placeholder{color:var(--muted);opacity:1}
+.input[aria-invalid=true]{border-color:var(--danger)}
+select.input{padding-right:28px}
+.search{position:relative;flex:1;min-width:200px;max-width:380px}
+.search svg{position:absolute;left:12px;top:50%;translate:0 -50%;color:var(--muted);pointer-events:none}
+.search .input{padding-left:36px}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label{font-weight:600;font-size:13px}
+.req{color:var(--danger)}
+.hint{font-size:12px;color:var(--muted)}
+.err{font-size:12.5px;color:var(--danger-ink,var(--danger));font-weight:500}
+.err:empty{display:none}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid .full{grid-column:1/-1}
+.check{display:flex;gap:10px;align-items:center;font-size:13.5px}
+.check input{width:18px;height:18px;accent-color:var(--primary)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toolbar select.input{width:auto;min-width:150px}
+
+.card-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.table-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;min-width:740px}
+.tbl th{text-align:left;font-weight:600;font-size:12.5px;color:var(--muted);padding:10px var(--cell);white-space:nowrap}
+.tbl td{padding:var(--rowpad) var(--cell);border-top:1px solid var(--line);vertical-align:middle}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-num,inherit)}
+.tbl .code{font-family:var(--font-num,inherit);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr.sel td{background:var(--sel)}
+.tbl tbody tr[data-act]{cursor:pointer}
+.tbl tbody tr[data-act]:hover td{background:var(--hover)}
+.tbl tbody tr.sel:hover td{background:var(--sel)}
+.row-actions{display:flex;gap:4px;justify-content:flex-end}
+.cell-main{display:flex;gap:12px;align-items:center;min-width:0}
+.cell-main b{display:block;font-weight:600}
+.cell-main small{color:var(--muted);font-size:12px}
+.tile{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--tint);color:var(--primary);font-weight:700;font-size:12px;flex:none}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--chip-bg);color:var(--chip-ink)}
+.chip i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip-ok{--chip-bg:var(--ok-bg);--chip-ink:var(--ok)}
+.chip-warn{--chip-bg:var(--warn-bg);--chip-ink:var(--warn)}
+.chip-info{--chip-bg:var(--info-bg);--chip-ink:var(--info)}
+.chip-off{--chip-bg:var(--off-bg);--chip-ink:var(--off)}
+.switch{width:44px;height:24px;border-radius:999px;border:0;background:var(--switch-off);position:relative;flex:none;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:translate .15s}
+.switch[aria-checked=true]{background:var(--switch-on,var(--primary))}
+.switch[aria-checked=true]::after{translate:20px 0}
+.pager{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px var(--cell);border-top:1px solid var(--line)}
+.pager-info{color:var(--muted);font-size:13px}
+.pager-btns{display:flex;gap:4px;align-items:center}
+.pg{min-width:34px;height:34px;padding:0 8px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--field,var(--surface));display:inline-grid;place-items:center;font-size:13px;font-variant-numeric:tabular-nums}
+.pg.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:700}
+.pg-gap{color:var(--muted);padding:0 4px}
+.seg{display:inline-flex;padding:3px;border-radius:var(--radius-sm);background:var(--hover);gap:2px}
+.seg button{border:0;background:none;padding:5px 12px;border-radius:calc(var(--radius-sm) - 2px);font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--seg-on,var(--surface));color:var(--ink);box-shadow:var(--seg-shadow,none)}
+.empty{display:grid;justify-items:center;gap:10px;text-align:center;padding:56px 20px;color:var(--muted)}
+.empty h3{color:var(--ink);font-size:16px}
+.empty-ic{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--tint);color:var(--primary)}
+
+.sk{border-radius:6px;background:linear-gradient(90deg,var(--sk1) 25%,var(--sk2) 50%,var(--sk1) 75%);background-size:200% 100%;animation:sk 1.2s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.sk-head{display:grid;gap:10px;margin-bottom:20px}
+.sk-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.sk-tiles .sk{height:96px}
+.sk-rows{display:grid;gap:16px;padding:20px}
+.sk-row{display:grid;grid-template-columns:36px 2fr 1fr 1fr 80px;gap:16px;align-items:center}
+.sk-row .sk{height:14px}
+.sk-row .sk:first-child{height:36px}
+
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:50}
+.ov{position:fixed;z-index:51;background:var(--surface-solid,var(--surface));color:var(--ink);display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.ov-modal,.ov-confirm,.ov-wide{top:50%;left:50%;translate:-50% -50%;width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 48px);border-radius:var(--radius)}
+.ov-confirm{width:min(430px,calc(100vw - 32px))}
+.ov-wide{width:min(780px,calc(100vw - 32px))}
+.ov-drawer{top:0;right:0;bottom:0;width:min(480px,100vw);padding-top:env(safe-area-inset-top,0px)}
+.ov-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px;border-bottom:1px solid var(--line)}
+.ov-h h2{font-size:18px}
+.ov-b{padding:24px;overflow:auto;flex:1}
+.ov-f{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;padding:16px 24px;border-top:1px solid var(--line)}
+.pop-scrim{position:fixed;inset:0;z-index:59}
+.pop{position:fixed;z-index:60;top:calc(var(--pop-top,64px) + env(safe-area-inset-top,0px));right:16px;width:min(340px,calc(100vw - 32px));background:var(--surface-solid,var(--surface));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:8px}
+.pop h3{font-size:13px;padding:8px 10px;color:var(--muted);font-weight:600}
+.pop-item{display:flex;gap:10px;width:100%;text-align:left;padding:10px;border:0;background:none;border-radius:var(--radius-sm);align-items:flex-start}
+.pop-item:hover{background:var(--hover)}
+.pop-item small{display:block;color:var(--muted);font-size:12px}
+.pop-item svg{margin-top:2px;color:var(--muted)}
+.toasts{position:fixed;z-index:70;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;width:min(380px,calc(100vw - 40px))}
+.toast{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface-solid,var(--surface));color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow-lg);animation:tin .2s ease-out;font-weight:500}
+.toast>svg{margin-top:2px}
+.toast-ok>svg{color:var(--ok)}
+.toast-err>svg{color:var(--danger)}
+.toast .iconbtn{margin:-6px -6px -6px auto;width:32px;height:32px}
+@keyframes tin{from{opacity:0;translate:0 8px}}
+
+.tl{list-style:none;margin:0;padding:0;display:grid}
+.tl li{position:relative;padding:0 0 22px 30px}
+.tl li::before{content:"";position:absolute;left:4px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid var(--line-strong,var(--line));background:var(--surface-solid,var(--surface))}
+.tl li::after{content:"";position:absolute;left:9px;top:18px;bottom:-2px;width:2px;background:var(--line)}
+.tl li:last-child{padding-bottom:0}
+.tl li:last-child::after{display:none}
+.tl li.done::before{background:var(--ok);border-color:var(--ok)}
+.tl li.done::after{background:var(--ok)}
+.tl li.cur::before{border-color:var(--primary);box-shadow:0 0 0 4px var(--tint)}
+.tl b{display:block;font-weight:600}
+.tl small{color:var(--muted);font-size:12px}
+.tl li.todo b{color:var(--muted);font-weight:500}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0;font-size:13px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;text-align:right}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;list-style:none;padding:0;margin:0;font-size:13px}
+.legend li{display:flex;align-items:center;gap:8px}
+.legend i{width:10px;height:10px;border-radius:3px;flex:none}
+.chart{width:100%;height:auto;display:block}
+.ch-grid{stroke:var(--grid);stroke-width:1}
+.ch-axis{fill:var(--muted);font-size:11px;font-family:var(--font-num,var(--font))}
+.ch-line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.ch-area{opacity:.1}
+.ch-dot{stroke:var(--dot-ring,#fff);stroke-width:2}
+.ch-val{fill:var(--ink);font-size:11px;font-weight:600;font-family:var(--font-num,var(--font))}
+.ch-center{fill:var(--ink);font-family:var(--font-h);font-weight:700}
+.ch-track{stroke:var(--grid)}
+.meter{display:flex;gap:4px;margin-top:8px}
+.meter i{flex:1;height:6px;border-radius:3px;background:var(--line-strong,var(--line))}
+.meter[data-s="1"] i:nth-child(-n+1){background:var(--danger)}
+.meter[data-s="2"] i:nth-child(-n+2){background:var(--warn)}
+.meter[data-s="3"] i:nth-child(-n+3){background:var(--info)}
+.meter[data-s="4"] i{background:var(--ok)}
+.prefs{list-style:none;margin:0;padding:0}
+.prefs li{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line)}
+.prefs li:first-child{border-top:0}
+.prefs b{font-weight:600}
+.prefs small{display:block;color:var(--muted);font-size:12.5px}
+.avatar{display:grid;place-items:center;border-radius:50%;background:var(--avatar,var(--primary));color:var(--on-primary);font-weight:700;flex:none;width:34px;height:34px;font-size:12.5px}
+.avatar.big{width:72px;height:72px;font-size:24px}
+.captcha{display:flex;gap:8px;align-items:center}
+.captcha-code{flex:none;user-select:none;letter-spacing:.3em;font:700 18px/1 var(--font-num,ui-monospace,monospace);padding:11px 10px 11px 16px;border-radius:var(--radius-sm);border:1px dashed var(--line-strong,var(--line));background:repeating-linear-gradient(-45deg,var(--hover) 0 6px,transparent 6px 12px);text-decoration:line-through;text-decoration-thickness:1px}
+.pw{position:relative}
+.pw .input{padding-right:64px}
+.pw button{position:absolute;right:6px;top:50%;translate:0 -50%;border:0;background:none;font-size:12px;font-weight:600;color:var(--link,var(--primary));padding:6px 8px;border-radius:6px}
+.login-form{display:grid;gap:16px}
+.login-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.linkbtn{border:0;background:none;padding:4px 2px;color:var(--link,var(--primary));font-weight:600;text-decoration:underline;text-underline-offset:3px;border-radius:4px}
+.demo-note{font-size:12.5px;color:var(--muted)}
+.ed-bar{display:flex;gap:4px;flex-wrap:wrap;padding:6px;border:1px solid var(--line-strong,var(--line));border-bottom:0;border-radius:var(--radius-sm) var(--radius-sm) 0 0;background:var(--hover)}
+.ed-bar button{min-width:34px;height:34px;border:0;border-radius:6px;background:none;font-weight:700;display:inline-grid;place-items:center;padding:0 8px}
+.ed-bar button:hover{background:var(--field,var(--surface))}
+.ed-body{min-height:220px;padding:14px;border:1px solid var(--line-strong,var(--line));border-radius:0 0 var(--radius-sm) var(--radius-sm);background:var(--field,var(--surface));line-height:1.6;overflow:auto}
+.ed-body:focus-visible{outline-offset:-2px}
+.ed-body p{margin:0 0 10px}
+.editor{display:grid;gap:16px;align-content:start}
+.ed-foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;align-items:center}
+.nitem{display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding:4px 12px 4px 4px}
+.nitem:first-child{border-top:0}
+.nitem.on{background:var(--sel)}
+.nitem-open{flex:1;min-width:0;text-align:left;border:0;background:none;padding:10px 12px;border-radius:var(--radius-sm)}
+.nitem-open b{display:block;font-weight:600}
+.nitem-open small{color:var(--muted);font-size:12px}
+.pcard{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.pcard h3{font-size:18px}
+.stack{display:grid;gap:16px}
+.ucard-top{display:flex;gap:12px;align-items:center}
+.ucard-top b{display:block;font-weight:600}
+.ucard-top small{color:var(--muted);font-size:12px;word-break:break-all}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}.sk-tiles{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.mono{font-family:var(--font-num,ui-monospace,SFMono-Regular,Menlo,monospace);font-variant-numeric:tabular-nums}
+.upper{text-transform:uppercase}
+.upper::placeholder{text-transform:none}
+textarea.input{resize:vertical;min-height:64px}
+.tag{display:inline-block;padding:1px 8px;border-radius:var(--radius-sm);border:1px solid var(--line-strong,var(--line));font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tbl small.sub{display:block;color:var(--muted);font-size:12px}
+.mini{width:100%;border-collapse:collapse;font-size:13.5px}
+.mini th{text-align:left;font-weight:600;color:var(--muted);font-size:12.5px;padding:8px 6px;border-bottom:1px solid var(--line-strong,var(--line))}
+.mini td{padding:8px 6px;border-bottom:1px solid var(--line)}
+.mini .num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-num,inherit)}
+.mini .tot td{font-weight:700;border-bottom:0}
+.bar{width:120px;height:8px;border-radius:4px;background:var(--grid);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:4px}
+.bar.low i{background:var(--warn)}
+.route{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--hover)}
+.route small{display:block;color:var(--muted);font-size:12px}
+.route b{display:block;font-weight:600;margin-bottom:4px}
+.route-arrow{color:var(--primary)}
+.qr{background:#fff;padding:6px;border-radius:8px;border:1px solid var(--line);width:140px;aspect-ratio:1;flex:none;display:grid;place-items:center;color:#111}
+.qr svg{width:100%;height:100%;display:block}
+.qr-off{text-align:center;font-size:11px;gap:4px;color:#555;align-content:center}
+.dsp-qr{display:flex;gap:16px;align-items:center}
+.dsp-qr p small,.slip-qr p small{display:block;color:var(--muted);font-size:12px}
+.dsp-qr p b,.slip-qr p b{font-size:16px;letter-spacing:.04em}
+.dsp-info{display:grid;gap:14px}
+.dsp-items h3,.dsp-track h3{font-size:13px;margin-bottom:10px}
+.dsp-acts{justify-content:stretch}
+.dsp-acts .btn{flex:1}
+#nd-sum{display:grid;gap:14px}
+.sum-items{list-style:none;margin:0;padding:12px 0 0;border-top:1px solid var(--line);display:grid;gap:8px;font-size:13px}
+.sum-items li{display:flex;justify-content:space-between;gap:12px}
+.nd-hint,.nd-note{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:var(--radius-sm);background:var(--tint);color:var(--ink)}
+.nd-hint svg,.nd-note svg{color:var(--primary);flex:none;margin-top:1px}
+.nd-note{margin-top:16px}
+.nd-stockof{margin-bottom:12px;color:var(--muted)}
+.nd-stockof b{color:var(--ink)}
+.nd-items{min-width:680px}
+.input.qty{width:120px;text-align:right;min-height:36px;font-family:var(--font-num,inherit)}
+.over{color:var(--danger-ink,var(--danger));font-weight:600;font-size:12.5px}
+.nd-foot{display:flex;gap:10px;align-items:center;padding:16px 20px;border-top:1px solid var(--line)}
+.rev-kv{margin-top:16px}
+.slip-top{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:20px 24px;border-bottom:1px solid var(--line)}
+.slip-top>div{flex:1;min-width:200px}
+.slip-ok{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--ok-bg);color:var(--ok);flex:none}
+.slip-ok.warn{background:var(--warn-bg);color:var(--warn)}
+.slip-l{color:var(--muted);font-size:13px}
+.slip-no{font-size:28px;letter-spacing:.02em}
+.slip-body{display:grid;grid-template-columns:240px 1fr;gap:28px;padding:24px}
+.slip-qr{display:grid;gap:12px;justify-items:start;align-content:start}
+.slip-qr .qr{width:220px}
+.slip-info{display:grid;gap:16px;align-content:start}
+.slip-foot{display:flex;flex-wrap:wrap;gap:10px;padding:16px 24px;border-top:1px solid var(--line)}
+.viewfinder{position:relative;aspect-ratio:4/3;border-radius:var(--radius-sm);background:#0A0F1A;color:#C9D3E3;display:grid;place-items:end center;padding:14px;overflow:hidden;font-size:12.5px}
+.viewfinder i{position:absolute;width:26px;height:26px;border:3px solid #fff;opacity:.9}
+.viewfinder i:nth-child(1){left:18%;top:14%;border-right:0;border-bottom:0}
+.viewfinder i:nth-child(2){right:18%;top:14%;border-left:0;border-bottom:0}
+.viewfinder i:nth-child(3){left:18%;bottom:24%;border-right:0;border-top:0}
+.viewfinder i:nth-child(4){right:18%;bottom:24%;border-left:0;border-top:0}
+.vf-line{position:absolute;left:18%;right:18%;top:16%;height:2px;background:var(--vf,#34D399);box-shadow:0 0 12px var(--vf,#34D399);opacity:0}
+.viewfinder.on .vf-line{opacity:1;animation:vf 1.1s ease-in-out infinite alternate}
+@keyframes vf{to{top:72%}}
+.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12.5px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.count{min-width:26px;padding:1px 8px;border-radius:999px;background:var(--tint);color:var(--primary);font-weight:700;font-size:12.5px;text-align:center}
+.qitem{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:12px 16px}
+.qitem:first-child{border-top:0}
+.qitem:hover{background:var(--hover)}
+.qitem b{display:block}
+.qitem small{color:var(--muted);font-size:12px}
+.qnone{padding:16px}
+.rcv-done{display:grid;gap:12px;justify-items:start}
+.rcv-done .mini,.rcv-done .ed-foot{justify-self:stretch}
+.rcv-kv{grid-template-columns:auto 1fr auto 1fr}
+.rcv-items{min-width:520px}
+@media(max-width:700px){.slip-body{grid-template-columns:1fr}.rcv-kv{grid-template-columns:auto 1fr}}
+.qitem>small{white-space:nowrap}
+.nd-items{min-width:560px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.card-h h2{font-size:15px;font-weight:600}
+.card-b{padding:18px}
+.ph{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.ph h1{font-size:24px;font-weight:600}
+.ph p{color:var(--muted);margin-top:4px}
+.ph-a{display:flex;gap:10px;flex-wrap:wrap}
+.filters{margin-bottom:16px}
+.only-sm{display:none}
+.userbtn{display:flex;align-items:center;gap:10px;border:0;background:none;padding:4px 8px;border-radius:var(--radius-sm);text-align:left}
+.userbtn:hover{background:var(--hover)}
+.userbtn-t b{display:block;font-size:13px;line-height:1.2}
+.userbtn-t small{color:var(--muted);font-size:12px}
+.cms{display:grid;grid-template-columns:minmax(300px,2fr) 3fr;gap:20px;align-items:start}
+.prof{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.prof-side{display:grid;gap:20px}
+.pcard{padding:14px;border-radius:var(--radius-sm);background:var(--tint)}
+.dsp-d{display:grid;gap:20px}
+.dsp-detail{overflow:hidden}
+.empty.compact{padding:28px 16px}
+.lg-form{display:grid;place-items:center;padding:32px 20px}
+.lg-box{width:min(400px,100%)}
+.lg-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lg-top h1,.lg-top h2{font-size:26px;font-weight:600}
+.lg-sub{margin:6px 0 24px}
+.gsearch{max-width:380px;min-width:160px}
+.tile2[hidden]{display:none}
+@media(max-width:900px){.cms,.prof{grid-template-columns:1fr}.userbtn-t,.lang span{display:none}.only-sm{display:inline-grid}}
+
+/* Variant D — Dispatch Board: tokens */
+:root{
+--font:"IBM Plex Sans","Noto Sans Devanagari",system-ui,sans-serif;--font-h:var(--font);--font-num:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+--bg:#EDF1F3;--surface:#FFFFFF;--ink:#0F2A33;--muted:#4F636B;--line:#D3DDE1;--line-strong:#A9BAC1;
+--primary:#0F6B7A;--on-primary:#FFFFFF;--tint:#DFF0F2;--hover:#E9EFF1;--sel:#DFF0F2;--focus:#0F6B7A;
+--ok:#1B6E3C;--ok-bg:#E0F2E6;--warn:#8F4305;--warn-bg:#FCE9D0;--info:#0B5C73;--info-bg:#DAEEF5;--off:#4F636B;--off-bg:#E5EBEE;--danger:#B42318;--danger-ink:#B42318;
+--radius:10px;--radius-sm:6px;--cell:14px;--rowpad:10px;
+--shadow-lg:0 14px 40px rgba(15,42,51,.22);--scrim:rgba(15,42,51,.45);--switch-off:#8DA0A8;--grid:#E1E8EB;--sk1:#E3EAED;--sk2:#F3F6F7;
+--c1:#0F6B7A;--c2:#D9650F;--c3:#6B7B82;--c4:#1B6E3C;--pop-top:68px}
+body{color-scheme:light;font-size:14px}
+.mark{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:var(--primary);color:#fff;flex:none}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;text-decoration:none;color:var(--ink);line-height:1.2}
+.d-top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.d-bar{display:flex;align-items:center;gap:12px;min-height:62px;padding:0 24px}
+.d-nav{display:flex;gap:4px;padding:0 20px 8px;overflow-x:auto}
+.dn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:6px;color:var(--muted);font-weight:500;text-decoration:none;white-space:nowrap}
+.dn:hover{background:var(--hover);color:var(--ink)}
+.dn.on{background:var(--tint);color:var(--primary);font-weight:600}
+.content{padding:24px;max-width:1560px;margin:0 auto;outline:0}
+.btn{border-radius:6px}
+.btn-primary:hover{background:#0B5662}
+.btn-lg{min-height:52px;padding:0 24px;font-size:15px}
+.tbl th{background:#F4F7F8;border-bottom:1px solid var(--line)}
+.tbl td{border-top:0;border-bottom:1px solid var(--line)}
+.chip{border-radius:5px}
+.tag{border-radius:5px}
+.count{min-width:26px;padding:1px 8px;border-radius:5px;background:#fff;border:1px solid var(--line-strong);font:600 12.5px var(--font-num);text-align:center}
+/* board */
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start}
+.bcol{--tone:var(--line-strong);background:#E2E9EC;border-radius:12px;padding:12px;display:grid;gap:10px;border-top:4px solid var(--tone)}
+.bcol-od{--tone:#C2410C}.bcol-tr{--tone:#0F6B7A}.bcol-ok{--tone:#1B6E3C}.bcol-sh{--tone:#B45309}
+.bcol.drop{outline:2px dashed var(--primary);outline-offset:-2px;background:var(--tint)}
+.bcol header{display:flex;justify-content:space-between;align-items:center}
+.bcol h2{font-size:15px}
+.bcol-sub{color:var(--muted);font-size:12.5px;margin-top:-6px}
+.bcards{display:grid;gap:8px}
+.bempty{padding:18px 8px;text-align:center;color:var(--muted);font-size:13px}
+.bcard{display:grid;gap:9px;text-align:left;padding:12px 12px 12px 14px;border:1px solid var(--line);border-left:5px solid var(--tone);border-radius:8px;background:#fff;width:100%}
+.bcard[draggable=true]{cursor:grab}
+.bcard:hover{border-color:var(--primary);border-left-color:var(--tone);box-shadow:0 2px 10px rgba(15,42,51,.12)}
+.bcard.drag{opacity:.4}
+.bc-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.bc-top b{font-size:13px}
+.bc-due{font-size:12px;color:var(--muted)}
+.bc-due.late{color:#B4380A;font-weight:600}
+.bc-route{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px;align-items:center;font-size:13px;line-height:1.3}
+.bc-route svg{color:var(--muted)}
+.bc-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.bmore{width:100%}
+/* briefing */
+.brief-head{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;margin-bottom:20px}
+.brief-head h1{font-size:30px;font-weight:600;letter-spacing:-.01em}
+.brief-head p{color:var(--muted);margin-top:4px;font-size:15px}
+.brief-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.att{grid-column:span 7}.month{grid-column:span 5}.trendc{grid-column:span 7}.flows{grid-column:span 5}
+.card-h.sub{border-top:1px solid var(--line);background:#F4F7F8}
+.alist{list-style:none;margin:0;padding:0}
+.alist li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:11px 18px;border-top:1px solid var(--line)}
+.alist li:first-child{border-top:0}
+.alist small{display:block;color:var(--muted);font-size:12.5px}
+.alist .bar{width:90px}
+.late{color:#B4380A;font-weight:600;font-size:13px;white-space:nowrap}
+.mlist{list-style:none;margin:0;padding:0}
+.mlist li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line)}
+.mlist li:first-child{border-top:0}
+.mlist span{display:block;color:var(--muted);font-size:13px}
+.mlist b{display:block;font:600 28px/1.15 var(--font-num)}
+.mlist small{color:var(--muted);font-size:12.5px}
+.flist{list-style:none;margin:0;padding:6px 18px 14px}
+.flist li{display:grid;grid-template-columns:150px minmax(0,1fr) 36px;gap:12px;align-items:center;padding:9px 0;font-size:13.5px}
+.flist .bar{width:auto;height:10px}
+.flist b{text-align:right;font-weight:500}
+/* cart builder */
+.routebar{margin-bottom:18px}
+.cart-grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:20px;align-items:start}
+.cat-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.cat-head h2{font-size:16px}
+.cat-head .search{max-width:260px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tile2{display:grid;gap:10px;align-content:start;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.tile2.on{border-color:var(--primary);box-shadow:0 0 0 2px var(--tint),inset 4px 0 0 var(--primary)}
+.tile2.out{opacity:.6}
+.t2-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.t2-top small{color:var(--muted)}
+.t2-stock b{font-size:24px;font-weight:600;margin-right:6px}
+.t2-stock span{color:var(--muted);font-size:12.5px}
+.tile2 .bar{width:100%}
+.stepper{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.stepper .iconbtn{border:1px solid var(--line-strong);color:var(--ink);font-size:18px;background:#fff}
+.stepper .input.qty{width:100%}
+.t2-left{font-size:12.5px;color:var(--muted)}
+.cart{position:sticky;top:124px}
+.cart-empty{display:flex;gap:12px;align-items:center;padding:16px;border-radius:8px;background:var(--hover);color:var(--muted)}
+.cart-lines{list-style:none;margin:0;padding:0}
+.cart-lines li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.cart-lines small{display:block;color:var(--muted);font-size:12.5px}
+.cart-tot{margin-top:12px}
+.cart-fields{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.cart-fields h3{font-size:14px;margin-bottom:12px}
+.cart .form-grid{grid-template-columns:1fr}
+.cart-foot{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line)}
+/* receive */
+.rv{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+.stage{padding:20px;display:grid;gap:18px}
+.viewfinder.big{aspect-ratio:16/9;border-radius:12px;border:1px solid #0F6B7A;--vf:#5EEAD4}
+.stage-act{display:grid;gap:12px}
+.find{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}
+.rq h2{font-size:16px;margin-bottom:12px;display:flex;gap:10px;align-items:center}
+.qgrid{display:grid;gap:8px}
+.qcard{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13px}
+.qcard:hover{border-color:var(--primary)}
+.qcard small{color:var(--muted);white-space:nowrap}
+.sheet-scrim{position:fixed;inset:0;background:var(--scrim);z-index:40}
+.sheet{position:fixed;z-index:41;top:0;right:0;bottom:0;width:min(560px,100vw);border-radius:0;overflow:auto;padding-top:env(safe-area-inset-top,0px);box-shadow:var(--shadow-lg)}
+.sheet-x{position:absolute;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:2}
+.sheet .card-h{padding-right:60px}
+.sheetcard{border:0}
+.ov-drawer .dsp-detail{border:0;border-radius:0}
+.slip{border-style:dashed;border-width:2px;border-color:var(--line-strong)}
+/* login */
+.lg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);min-height:100vh}
+.lgb{margin-bottom:36px}
+.lg-art{background:#DCEEF0;display:grid;place-content:center;gap:28px;padding:40px;justify-items:center;text-align:center;color:var(--ink)}
+.lg-art p{max-width:34ch;font-size:16px}
+.flowdiag{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+.fd-node{display:grid;gap:6px;justify-items:center;width:170px;padding:18px 12px;background:#fff;border:1px solid var(--line-strong);border-radius:12px}
+.fd-node>span{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:var(--tint);color:var(--primary)}
+.fd-node small{color:var(--muted)}
+.fd-link{display:flex;align-items:center;width:110px}
+.fd-link i{flex:1;height:0;border-top:2px dashed var(--primary)}
+.fd-qr{display:grid;place-items:center;width:48px;height:48px;border-radius:8px;background:#fff;border:2px solid var(--primary);color:var(--primary)}
+@media(max-width:1200px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}.att,.month,.trendc,.flows{grid-column:span 12}.cart-grid,.rv{grid-template-columns:1fr}.cart{position:static}}
+@media(max-width:900px){.lg{grid-template-columns:1fr}.lg-art{display:none}.d-bar{padding:0 14px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}.gsearch{order:5;max-width:none;flex-basis:100%}.content{padding:16px 14px}.d-nav{padding:0 10px 8px}}
+@media(max-width:700px){.board{grid-template-columns:1fr}.flist li{grid-template-columns:110px minmax(0,1fr) 30px}.alist li{grid-template-columns:minmax(0,1fr) auto}.alist li .late,.alist li .bar{display:none}.find{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>Number(n).toLocaleString('en-IN');
+
+/* ---------- icons ---------- */
+const IC={
+grid:'<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+truck:'<path d="M2 6h11v10H2z"/><path d="M13 9h4l4 4v3h-8z"/><circle cx="6.5" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.7a3.5 3.5 0 010 6.6"/><path d="M18 14.3c2.1.7 3.5 2.6 3.5 5.7"/>',
+megaphone:'<path d="M3 10v4l11 5V5L3 10z"/><path d="M17.5 9a4 4 0 010 6"/><path d="M6 15.4V19a1.5 1.5 0 003 0v-2.3"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+bell:'<path d="M6 9a6 6 0 0112 0c0 6 2.5 7 2.5 7h-17S6 15 6 9z"/><path d="M10 20a2 2 0 004 0"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+x:'<path d="M6 6l12 12M18 6L6 18"/>',
+chevL:'<path d="M15 6l-6 6 6 6"/>',chevR:'<path d="M9 6l6 6-6 6"/>',chevD:'<path d="M6 9l6 6 6-6"/>',
+arrowR:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+edit:'<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>',
+trash:'<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/>',
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+alert:'<path d="M12 3l9.5 17h-19L12 3z"/><path d="M12 10v4.5"/><path d="M12 17.5v.01"/>',
+menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+logout:'<path d="M9 4H5v16h4"/><path d="M16 8l4 4-4 4"/><path d="M20 12H9"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 3 2.8 15 0 18c-2.8-3-2.8-15 0-18z"/>',
+refresh:'<path d="M20 11a8 8 0 00-14.5-4.5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0014.5 4.5L20 16"/><path d="M20 20v-4h-4"/>',
+inbox:'<path d="M3 13l3-8h12l3 8v6H3v-6z"/><path d="M3 13h5l1.5 3h5L16 13h5"/>',
+list:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6v.01M4.5 12v.01M4.5 18v.01"/>',
+link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+sidebar:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+box:'<path d="M12 3l8.5 4.5v9L12 21l-8.5-4.5v-9L12 3z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 12v9"/>',
+pin:'<path d="M12 21s7-6.1 7-11a7 7 0 00-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+shield:'<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/><path d="M9 12l2.2 2.2L15.2 10"/>',
+camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20.5 14v.01M14 20.5v.01M17.5 20.5H21V17"/>',
+printer:'<path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/>'
+};
+const ic=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||''}</svg>`;
+
+/* ---------- i18n ---------- */
+const I18N={
+en:{portal:'Dispatch Portal',dept:'Supply and Logistics Directorate, State Government',dashboard:'Dashboard',locations:'Locations',items:'Items & stock',dispatch:'Dispatch','new-dispatch':'New dispatch',receive:'Receive',users:'Users',cms:'Notices',profile:'Profile & settings',signin:'Sign in',username:'Username',password:'Password',captcha:'Type the code shown',forgot:'Forgot password?',signout:'Sign out',other:'हिन्दी'},
+hi:{portal:'सामग्री प्रेषण पोर्टल',dept:'आपूर्ति एवं लॉजिस्टिक्स निदेशालय, राज्य सरकार',dashboard:'डैशबोर्ड',locations:'स्थान',items:'सामग्री और स्टॉक',dispatch:'प्रेषण','new-dispatch':'नया प्रेषण',receive:'प्राप्ति',users:'उपयोगकर्ता',cms:'सूचनाएँ',profile:'प्रोफ़ाइल और सेटिंग्स',signin:'साइन इन करें',username:'उपयोगकर्ता नाम',password:'पासवर्ड',captcha:'दिखाया गया कोड लिखें',forgot:'पासवर्ड भूल गए?',signout:'साइन आउट',other:'English'}};
+const t=k=>I18N[S.lang][k]||I18N.en[k]||k;
+
+/* ---------- data ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+const R=rng(20261116);
+const pick=a=>a[Math.floor(R()*a.length)];
+const FIRST=['Anita','Rakesh','Sunita','Vikram','Meena','Arvind','Kavita','Sanjay','Pooja','Manoj','Rekha','Deepak','Neha','Rajesh','Shalini','Amit','Geeta','Suresh','Priya','Naveen','Lata','Harish','Seema','Ashok','Divya','Mahesh','Usha','Nitin','Asha','Vivek'];
+const LAST=['Sharma','Verma','Singh','Kumar','Gupta','Mishra','Yadav','Joshi','Mehta','Chauhan','Pandey','Saxena','Thakur','Nair','Rao','Das','Kapoor','Bhatt','Malik','Tiwari'];
+const pname=()=>pick(FIRST)+' '+pick(LAST);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dfmt=d=>`${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`;
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fromIso=s=>new Date(s+'T00:00:00');
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const TODAY=new Date(2026,10,16);
+
+const TYPES=['State','Department','District','Block','School','Warehouse'];
+const TPLURAL={State:'State',Department:'Departments',District:'Districts',Block:'Blocks',School:'Schools',Warehouse:'Warehouses'};
+const TPRE={State:'ST',Department:'DP',District:'DT',Block:'BK',School:'SC',Warehouse:'WH'};
+const locations=[];const LOC={};const tcount={};
+function addLoc(name,type,parent,extra){tcount[type]=(tcount[type]||0)+1;const l=Object.assign({id:locations.length+1,code:`${TPRE[type]}-${String(tcount[type]).padStart(3,'0')}`,name,type,parent:parent||null,incharge:pname(),active:R()<.94},extra||{});locations.push(l);LOC[l.id]=l;return l}
+const HQ=addLoc('State Headquarters','State',null,{active:true});
+['Department of Education','Department of Health','Department of Rural Development'].forEach(n=>addLoc(n,'Department',HQ.id,{active:true}));
+const CWH=addLoc('State Central Warehouse','Warehouse',HQ.id,{active:true});
+const AREA=['Station Road','Civil Lines','Nehru Nagar','Gandhi Chowk','Shastri Nagar','Subhash Colony','Ambedkar Nagar','Lake View','Old Town','Market Road','Canal Road','Temple Street'];
+let ward=1;
+['North','South','East','West','Central','Coastal'].forEach(n=>{const d=addLoc(`${n} District Office`,'District',HQ.id,{active:true});addLoc(`${n} District Warehouse`,'Warehouse',d.id,{active:true});
+  for(let b=1;b<=4;b++){const bk=addLoc(`${n} District, Block ${b}`,'Block',d.id);for(let s=0;s<2;s++)addLoc(`${pick(['Government Primary School','Government High School','Government Higher Secondary School','Model School'])}, ${pick(AREA)}, Ward ${ward++}`,'School',bk.id)}});
+const lname=id=>LOC[id]?LOC[id].name:'Not set';
+
+const ITEMS=[['Textbook sets','Sets'],['Uniform sets','Sets'],['Science lab kits','Kits'],['Sports kits','Kits'],['Desks and benches','Nos'],['Office chairs','Nos'],['Desktop computers','Nos'],['Tablets','Nos'],['Printer paper','Reams'],['Stationery packs','Packs'],['First-aid kits','Kits'],['Printed registers and forms','Bundles']].map(([name,unit],i)=>({id:i+1,code:`ITM-${String(i+1).padStart(3,'0')}`,name,unit}));
+const IT={};ITEMS.forEach(i=>IT[i.id]=i);
+const STK={};const BASE={Warehouse:[2000,9000],State:[400,1800],Department:[200,900],District:[300,1500],Block:[60,400],School:[20,160]};
+function stk(l,i){const k=l+'_'+i;if(!STK[k]){const loc=LOC[l],[a,b]=BASE[loc.type];const zero=loc.type!=='Warehouse'&&R()<.2;const total=zero?0:Math.round((a+R()*(b-a))/10)*10;STK[k]={total,rem:Math.min(total,Math.round(total*(.25+R()*.7)/5)*5)}}return STK[k]}
+locations.forEach(l=>ITEMS.forEach(i=>stk(l.id,i.id)));
+
+const byType=tp=>locations.filter(l=>l.type===tp);
+const rfrom=()=>{const r=R();return pick(r<.5?byType('Warehouse'):r<.72?byType('District'):r<.84?[...byType('State'),...byType('Department')]:byType('Block'))};
+const rto=f=>{let x;do{const r=R();x=pick(r<.4?byType('School'):r<.7?byType('Block'):r<.85?byType('District'):r<.93?byType('Warehouse'):byType('Department'))}while(x.id===f.id);return x};
+const genQr=()=>{const c='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='QR';for(let i=0;i<8;i++)s+=c[Math.floor(R()*c.length)];return s};
+const plate=()=>`XX ${String(1+Math.floor(R()*40)).padStart(2,'0')} ${pick('ABCDEFGHJKLMNPRSTUV'.split(''))}${pick('ABCDEFGHJKLMNPRSTUV'.split(''))} ${1000+Math.floor(R()*9000)}`;
+const MSEQ=[[2025,11],[2026,0],[2026,1],[2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],[2026,8],[2026,9],[2026,10]];
+const MCOUNT=[21,24,26,25,29,33,31,36,41,38,46,31];
+const MRECV=[18,23,25,26,27,32,31,34,39,39,42,24];
+const MLAB=MSEQ.map(([y,m])=>MON[m]);
+let dispatches=[];
+MSEQ.forEach(([y,m],mi)=>{for(let i=0;i<MCOUNT[mi];i++){const day=mi===11?1+Math.floor(R()*16):1+Math.floor(R()*28);const f=rfrom(),to=rto(f),r=R(),date=new Date(y,m,day);
+  let st=r<.05?'Short received':'Received';if(mi===10&&r>.88)st='In Transit';if(mi===11&&(day>10?r<.78:r<.3))st='In Transit';
+  const n=1+Math.floor(R()*3),ids=[];while(ids.length<n){const id=1+Math.floor(R()*ITEMS.length);if(!ids.includes(id))ids.push(id)}
+  const items=ids.map((id,j)=>{const qty=10+Math.floor(R()*30)*10;return {item:id,qty,recv:st==='Received'?qty:st==='Short received'&&j===0?qty-10:st==='In Transit'?null:qty}});
+  const due=addDays(date,2+Math.floor(R()*5));
+  dispatches.push({mi,date,due,from:f.id,to:to.id,items,vehicle:plate(),driver:pname(),status:st,qr:genQr(),recvDate:st==='In Transit'?null:new Date(Math.min(+addDays(date,1+Math.floor(R()*4)),+TODAY)),recvBy:st==='In Transit'?null:to.incharge,remarks:''})}});
+dispatches.sort((a,b)=>b.date-a.date);
+const dno=(d,seq)=>`DN-${String(d.getFullYear()).slice(2)}${String(d.getMonth()+1).padStart(2,'0')}-${String(seq).padStart(4,'0')}`;
+dispatches.forEach((d,i)=>{d.id=dno(d.date,dispatches.length-i)});
+const units=d=>d.items.reduce((a,x)=>a+x.qty,0);
+const overdue=d=>d.status==='In Transit'&&d.due<TODAY;
+
+const ROLES=['State Admin','Dispatch Officer','Receiving Officer'];
+const users=[{id:1,name:'Anita Sharma',role:'State Admin',loc:HQ.id,active:true,last:'Today, 9:48 am'}];
+for(let i=1;i<64;i++){const role=i<4?'State Admin':i<30?'Dispatch Officer':'Receiving Officer';let name;do{name=pname()}while(users.some(u=>u.name===name));
+  users.push({id:i+1,name,role,loc:role==='State Admin'?HQ.id:role==='Dispatch Officer'?pick([...byType('Warehouse'),...byType('District'),...byType('Department')]).id:pick([...byType('Block'),...byType('School')]).id,active:R()<.88,last:pick(['Today, 8:15 am','Yesterday','12 Nov 2026','9 Nov 2026','3 Nov 2026','28 Oct 2026'])})}
+users.forEach(u=>u.email=u.name.toLowerCase().replace(' ','.')+'@dispatch.example');
+const ME=users[0];
+const initials=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+
+const notices=[
+{id:1,title:'Scan the QR code before unloading any vehicle',cat:'Procedures',date:'14 Nov 2026',pub:true,body:'<p>Receiving officers must scan the QR code on the dispatch slip <b>before unloading</b>. If the code can’t be scanned, type the QR code number or dispatch number printed below it.</p><p>Count every item and enter the received quantity. Record any shortage in the remarks.</p>'},
+{id:2,title:'Half-yearly stock verification: 1 to 10 December',cat:'Stock',date:'12 Nov 2026',pub:true,body:'<p>Every location must verify physical stock against the portal between 1 and 10 December 2026. Dispatches continue as normal during verification.</p>'},
+{id:3,title:'Vehicle number is now required on every dispatch',cat:'Circulars',date:'9 Nov 2026',pub:true,body:'<p>A dispatch number is not generated until the vehicle number and delivery date are entered.</p>'},
+{id:4,title:'Training for new dispatch officers',cat:'Training',date:'6 Nov 2026',pub:false,body:'<p>Draft: a one-day session on creating dispatches and printing QR slips is planned at each district office. Dates to be confirmed.</p>'},
+{id:5,title:'Dispatches not received within 7 days will be escalated',cat:'Circulars',date:'2 Nov 2026',pub:true,body:'<p>Any dispatch still in transit 7 days after its delivery date is reported to the district office of the receiving location.</p>'},
+{id:6,title:'Year-end indent for furniture and computers',cat:'Stock',date:'29 Oct 2026',pub:false,body:'<p>Draft: departments should submit year-end requirements for furniture and computers by 15 January.</p>'},
+{id:7,title:'Scheduled maintenance on Sunday, 22 November',cat:'Portal',date:'27 Oct 2026',pub:true,body:'<p>The portal will be unavailable from 10 pm to 2 am. Print any dispatch slips you need before 9:45 pm.</p>'}];
+const NCATS=['Circulars','Procedures','Stock','Training','Portal'];
+const activity=[
+{who:'Rakesh Verma',what:'dispatched 420 uniform sets from State Central Warehouse to Coastal District Office',when:'12 min ago',icon:'truck'},
+{who:'Sunita Joshi',what:'received a dispatch at North District, Block 2 by scanning its QR code',when:'48 min ago',icon:'qr'},
+{who:'Vikram Singh',what:'recorded a short receipt of 10 science lab kits at East District Warehouse',when:'2 hours ago',icon:'alert'},
+{who:'Anita Sharma',what:'published the notice “Scan the QR code before unloading any vehicle”',when:'Yesterday, 4:20 pm',icon:'megaphone'},
+{who:'Meena Gupta',what:'added the location West District, Block 4',when:'Yesterday, 11:05 am',icon:'pin'},
+{who:'Arvind Nair',what:'dispatched 60 desktop computers from Department of Education to Central District Office',when:'14 Nov, 3:40 pm',icon:'truck'}];
+
+/* ---------- state ---------- */
+const ROUTES=['dashboard','locations','items','dispatch','new-dispatch','receive','users','cms','profile'];
+const NAV=[{r:'dashboard',i:'grid'},{r:'locations',i:'pin'},{r:'items',i:'box'},{r:'dispatch',i:'truck'},{r:'receive',i:'qr'},{r:'users',i:'users'},{r:'cms',i:'megaphone'},{r:'profile',i:'user'}];
+const navOn=r=>S.route===r||(r==='dispatch'&&S.route==='new-dispatch');
+const blankNd=()=>({step:1,from:'',to:'',qty:{},vehicle:'',driver:'',phone:'',due:iso(addDays(TODAY,3)),remarks:'',done:null});
+const S={route:'dashboard',authed:false,next:null,lang:'en',loading:false,lq:'',ltype:'',lstatus:'',lpage:1,iq:'',iloc:String(CWH.id),dq:'',dstatus:'',dpage:1,sel:null,uq:'',urole:'',upage:1,nsel:1,ntab:'',ptab:'profile',range:12,collapsed:false,navOpen:false,cap:'',prefs:{email:true,sms:true,weekly:false,notice:true},nd:blankNd(),rcv:{found:null,done:null,err:'',scanning:false,code:''}};
+const genCap=()=>{const c='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=c[Math.floor(Math.random()*c.length)];return s};
+S.cap=genCap();
+
+/* ---------- small builders ---------- */
+const CHIP={Active:'ok',Received:'ok',Published:'ok',Overdue:'warn','Short received':'warn',Draft:'warn','In Transit':'info',Inactive:'off'};
+const chip=s=>`<span class="chip chip-${CHIP[s]||'off'}"><i></i>${esc(s==='In Transit'?'In transit':s)}</span>`;
+const tag=s=>`<span class="tag">${esc(s)}</span>`;
+const sw=(on,act,id,label)=>`<button type="button" class="switch" role="switch" aria-checked="${!!on}" data-act="${act}" data-id="${id}" aria-label="${esc(label)}"></button>`;
+const opts=(list,cur)=>list.map(o=>{const[v,l]=Array.isArray(o)?o:[o,o];return `<option value="${esc(v)}" ${String(cur)===String(v)?'selected':''}>${esc(l)}</option>`}).join('');
+const locOpts=(val,ex,ph)=>(ph?`<option value="">${ph}</option>`:'')+TYPES.map(tp=>`<optgroup label="${TPLURAL[tp]}">${locations.filter(l=>l.type===tp&&l.active&&l.id!=ex).map(l=>`<option value="${l.id}" ${val==l.id?'selected':''}>${esc(l.name)}</option>`).join('')}</optgroup>`).join('');
+function sel(k,list,label){return `<select class="input" data-model="${k}" aria-label="${esc(label)}">${opts(list,S[k])}</select>`}
+function search(k,ph){return `<div class="search">${ic('search',16)}<input class="input" type="search" data-model="${k}" value="${esc(S[k])}" placeholder="${esc(ph)}" aria-label="${esc(ph)}"></div>`}
+function seg(k,items){return `<div class="seg" role="group">${items.map(([v,l])=>`<button type="button" class="${String(S[k])===String(v)?'on':''}" aria-pressed="${String(S[k])===String(v)}" data-act="set" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`}
+function fld(id,label,html,hint,req){return `<div class="fld"><label for="${id}">${label}${req?' <span class="req" aria-hidden="true">*</span>':''}</label>${html}${hint?`<p class="hint">${hint}</p>`:''}<p class="err" id="${id}-err" role="alert"></p></div>`}
+const inp=(id,val='',attrs='')=>`<input class="input" id="${id}" name="${id}" value="${esc(val)}" ${attrs}>`;
+const fsel=(id,list,val)=>`<select class="input" id="${id}" name="${id}">${opts(list,val)}</select>`;
+function pager(k,total,per){const pages=Math.max(1,Math.ceil(total/per));const p=Math.min(Math.max(1,S[k]),pages);S[k]=p;const from=total?(p-1)*per+1:0,to=Math.min(total,p*per);
+  const arr=[...new Set([1,pages,p-1,p,p+1].filter(n=>n>=1&&n<=pages))].sort((a,b)=>a-b);let nums='',prev=0;
+  arr.forEach(n=>{if(n-prev>1)nums+='<span class="pg-gap">…</span>';nums+=`<button class="pg ${n===p?'on':''}" data-act="page" data-k="${k}" data-v="${n}" ${n===p?'aria-current="page"':''} aria-label="Page ${n}">${n}</button>`;prev=n});
+  return `<nav class="pager" aria-label="Pagination"><span class="pager-info">Showing ${fmt(from)}–${fmt(to)} of ${fmt(total)}</span><div class="pager-btns"><button class="pg" data-act="page" data-k="${k}" data-v="${p-1}" ${p<=1?'disabled':''} aria-label="Previous page">${ic('chevL',16)}</button>${nums}<button class="pg" data-act="page" data-k="${k}" data-v="${p+1}" ${p>=pages?'disabled':''} aria-label="Next page">${ic('chevR',16)}</button></div></nav>`}
+function empty(title,text){return `<div class="empty"><span class="empty-ic">${ic('inbox',26)}</span><h3>${title}</h3><p>${text}</p><button class="btn btn-ghost" data-act="clear">Clear search and filters</button></div>`}
+function skeleton(){return `<div class="sk-head"><div class="sk" style="height:26px;width:240px"></div><div class="sk" style="height:14px;width:360px;max-width:80%"></div></div>${S.route==='dashboard'?'<div class="sk-tiles"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>':''}<div class="card"><div class="sk-rows" aria-busy="true" aria-label="Loading">${'<div class="sk-row"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>'.repeat(7)}</div></div>`}
+function card(title,body,actions,cls){return `<section class="card ${cls||''}"><header class="card-h"><h2>${title}</h2>${actions||''}</header><div class="card-b">${body}</div></section>`}
+function qrSvg(d){try{if(!window.qrcode)throw 0;const q=window.qrcode(0,'M');q.addData(`${d.id}|${d.qr}`);q.make();return `<div class="qr" role="img" aria-label="QR code for dispatch ${d.id}">${q.createSvgTag({cellSize:4,margin:2,scalable:true})}</div>`}catch(e){return `<div class="qr qr-off" role="img" aria-label="QR code unavailable">${ic('qr',48)}<small>QR image needs a network connection</small></div>`}}
+const route=(f,to)=>`<div class="route"><div><small>From</small><b>${f?esc(f.name):'Not selected'}</b>${f?tag(f.type):''}</div><span class="route-arrow">${ic('arrowR',18)}</span><div><small>To</small><b>${to?esc(to.name):'Not selected'}</b>${to?tag(to.type):''}</div></div>`;
+
+/* ---------- charts ---------- */
+function niceMax(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const n=v/p;return (n<=1?1:n<=2?2:n<=5?5:10)*p}
+function lineChart({labels,series,w=720,h=260,area=true,label='Trend chart'}){
+  const P={l:34,r:12,t:14,b:26},n=labels.length,max=niceMax(Math.max(...series.flatMap(s=>s.data))*1.05);
+  const x=i=>P.l+i*(w-P.l-P.r)/(n-1),y=v=>P.t+(1-v/max)*(h-P.t-P.b);let g='';
+  for(let i=0;i<=4;i++){const v=max*i/4,yy=y(v);g+=`<line class="ch-grid" x1="${P.l}" x2="${w-P.r}" y1="${yy}" y2="${yy}"/><text class="ch-axis" x="${P.l-8}" y="${yy+4}" text-anchor="end">${Math.round(v)}</text>`}
+  labels.forEach((l,i)=>{g+=`<text class="ch-axis" x="${x(i)}" y="${h-6}" text-anchor="middle">${l}</text>`});
+  series.forEach(s=>{let d=`M${x(0)},${y(s.data[0])}`;for(let i=1;i<n;i++){const dx=(x(i)-x(i-1))/2;d+=` C${x(i-1)+dx},${y(s.data[i-1])} ${x(i)-dx},${y(s.data[i])} ${x(i)},${y(s.data[i])}`}
+    if(area)g+=`<path class="ch-area" style="fill:var(--${s.c})" d="${d} L${x(n-1)},${h-P.b} L${x(0)},${h-P.b} Z"/>`;
+    g+=`<path class="ch-line" style="stroke:var(--${s.c})" d="${d}"/>`;
+    s.data.forEach((v,i)=>{g+=`<circle class="ch-dot" style="fill:var(--${s.c})" cx="${x(i)}" cy="${y(v)}" r="4"><title>${s.name}, ${labels[i]}: ${v}</title></circle>`})});
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}">${g}</svg>`}
+function barChart({items,w=520,h=260,horizontal=false,c='c1',r=6,label='Bar chart'}){
+  const max=niceMax(Math.max(...items.map(i=>i.value)));let g='';
+  if(horizontal){const P={l:92,r:44,t:6,b:6},bh=(h-P.t-P.b)/items.length;
+    items.forEach((it,i)=>{const yy=P.t+i*bh,bw=(w-P.l-P.r)*it.value/max;
+      g+=`<text class="ch-axis" x="${P.l-10}" y="${yy+bh/2+4}" text-anchor="end">${it.label}</text><rect x="${P.l}" y="${yy+bh*.28}" width="${w-P.l-P.r}" height="${bh*.44}" rx="${r}" fill="var(--grid)"/><rect class="ch-bar" x="${P.l}" y="${yy+bh*.28}" width="${bw}" height="${bh*.44}" rx="${r}" style="fill:var(--${c})"><title>${it.label}: ${it.value}</title></rect><text class="ch-val" x="${P.l+bw+8}" y="${yy+bh/2+4}">${it.value}</text>`})}
+  else{const P={l:34,r:8,t:22,b:26},bw=(w-P.l-P.r)/items.length,y=v=>P.t+(1-v/max)*(h-P.t-P.b);
+    for(let i=0;i<=4;i++){const v=max*i/4;g+=`<line class="ch-grid" x1="${P.l}" x2="${w-P.r}" y1="${y(v)}" y2="${y(v)}"/><text class="ch-axis" x="${P.l-8}" y="${y(v)+4}" text-anchor="end">${Math.round(v)}</text>`}
+    items.forEach((it,i)=>{const xx=P.l+i*bw+bw*.22,ww=bw*.56,yy=y(it.value);
+      g+=`<rect class="ch-bar" x="${xx}" y="${yy}" width="${ww}" height="${h-P.b-yy}" rx="${r}" style="fill:var(--${c})"><title>${it.label}: ${it.value}</title></rect><text class="ch-val" x="${xx+ww/2}" y="${yy-6}" text-anchor="middle">${it.value}</text><text class="ch-axis" x="${xx+ww/2}" y="${h-6}" text-anchor="middle">${it.label}</text>`})}
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}">${g}</svg>`}
+function donut({segments,size=200,thick=26,centerTop,centerSub,label='Status chart'}){
+  const r=(size-thick)/2,c=2*Math.PI*r,total=segments.reduce((a,s)=>a+s.value,0)||1;let off=0,g=`<circle class="ch-track" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke-width="${thick}"/>`;
+  segments.forEach(s=>{const len=c*s.value/total;g+=`<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke-width="${thick}" style="stroke:var(--${s.c})" stroke-dasharray="${Math.max(0,len-2)} ${c-Math.max(0,len-2)}" stroke-dashoffset="${-off}" transform="rotate(-90 ${size/2} ${size/2})"><title>${s.label}: ${s.value}</title></circle>`;off+=len});
+  g+=`<text class="ch-center" x="${size/2}" y="${size/2+4}" text-anchor="middle" font-size="${size*.17}">${centerTop??total}</text><text class="ch-axis" x="${size/2}" y="${size/2+22}" text-anchor="middle">${centerSub||''}</text>`;
+  return `<svg class="chart donut" viewBox="0 0 ${size} ${size}" role="img" aria-label="${esc(label)}">${g}</svg>`}
+function spark(data,c,w=120,h=36){const mn=Math.min(...data),mx=Math.max(...data),x=i=>2+i*(w-4)/(data.length-1),y=v=>h-4-(v-mn)/((mx-mn)||1)*(h-8);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline class="ch-line" style="stroke:var(--${c});stroke-width:2" points="${data.map((v,i)=>`${x(i)},${y(v)}`).join(' ')}"/></svg>`}
+
+/* ---------- dashboard data ---------- */
+function kpis(){const tr=dispatches.filter(d=>d.status==='In Transit'),od=tr.filter(overdue).length,now=dispatches.filter(d=>d.date.getMonth()===10&&d.date.getFullYear()===2026).length;
+  const rec=dispatches.filter(d=>d.recvDate&&d.recvDate.getMonth()===10&&d.recvDate.getFullYear()===2026).length,act=locations.filter(l=>l.active).length;return [
+  {k:'dispatch',label:'Dispatches this month',value:fmt(now),note:'46 in October',icon:'truck',c:'c1',spark:[...MCOUNT.slice(0,11),now],route:'dispatch',rk:'dstatus',rv:''},
+  {k:'transit',label:'In transit now',value:fmt(tr.length),note:`${od} past their delivery date`,icon:'clock',c:'c3',spark:[9,12,8,11,14,10,13,12,16,14,18,tr.length],route:'dispatch',rk:'dstatus',rv:'In Transit',warn:true},
+  {k:'received',label:'Received this month',value:fmt(rec),note:'Confirmed by QR scan or code',icon:'qr',c:'c2',spark:[...MRECV.slice(0,11),rec],route:'dispatch',rk:'dstatus',rv:'Received'},
+  {k:'locations',label:'Active locations',value:fmt(act),note:`of ${locations.length} registered`,icon:'pin',c:'c4',spark:[61,64,68,70,73,75,78,80,82,84,85,act],route:'locations'}]}
+function trend(){const n=S.range;return {labels:MLAB.slice(-n),series:[{name:'Dispatched',c:'c1',data:MCOUNT.slice(-n)},{name:'Received',c:'c2',data:MRECV.slice(-n)}]}}
+function typeBars(){return TYPES.filter(x=>x!=='State').map(tp=>({label:TPLURAL[tp],value:dispatches.filter(d=>LOC[d.to].type===tp).length}))}
+function statusSplit(){const recent=dispatches.filter(d=>d.mi===undefined||d.mi>=10);return [['Received','ok'],['In Transit','info'],['Short received','warn']].map(([l,c])=>({label:l==='In Transit'?'In transit':l,c,value:recent.filter(d=>d.status===l).length}))}
+const notifs=()=>[
+{icon:'clock',title:`${dispatches.filter(overdue).length} dispatches are past their delivery date`,sub:'Not yet received at the destination',route:'dispatch',k:'dstatus',v:'In Transit'},
+{icon:'box',title:'3 items are running low at State Central Warehouse',sub:'Less than a third of total quantity remains',route:'items',k:'iloc',v:String(CWH.id)},
+{icon:'megaphone',title:'2 notices are still in draft',sub:'Last edited 6 Nov 2026',route:'cms',k:'ntab',v:'draft'}];
+
+/* ---------- login ---------- */
+function loginForm(){return `<form id="f-login" class="login-form" novalidate>
+  ${fld('lu',t('username'),inp('lu','','autocomplete="username" required'),'',true)}
+  ${fld('lp',t('password'),`<div class="pw">${inp('lp','','type="password" autocomplete="current-password" required')}<button type="button" data-act="pwToggle" data-id="lp">Show</button></div>`,'',true)}
+  ${fld('lc',t('captcha'),`<div class="captcha"><span class="captcha-code" aria-label="Verification code: ${S.cap.split('').join(' ')}">${S.cap}</span><button type="button" class="iconbtn" data-act="capRefresh" aria-label="Get a new code">${ic('refresh',18)}</button>${inp('lc','','autocomplete="off" autocapitalize="characters" maxlength="5" required')}</div>`,'',true)}
+  <div class="login-row"><label class="check"><input type="checkbox" checked> Keep me signed in on this device</label><button type="button" class="linkbtn" data-act="forgot">${t('forgot')}</button></div>
+  <button class="btn btn-primary btn-block" type="submit">${ic('lock',16)}${t('signin')}</button>
+  <p class="demo-note">Demo sign-in: enter any username and password, then type the code shown.</p></form>`}
+const langBtn=(cls='btn btn-ghost btn-sm')=>`<button type="button" class="${cls} lang" data-act="lang" aria-label="Switch language">${ic('globe',16)}<span>${t('other')}</span></button>`;
+
+/* ---------- locations ---------- */
+const PER=10;
+function locRows(){const q=S.lq.trim().toLowerCase();return locations.filter(l=>(!S.ltype||l.type===S.ltype)&&(!S.lstatus||(S.lstatus==='Active')===l.active)&&(!q||(l.name+' '+l.code+' '+l.incharge).toLowerCase().includes(q)))}
+function locRegion(){const all=locRows();if(!all.length)return `<div class="card">${empty('No locations match this search','Try a different name or code, or remove a filter.')}</div>`;
+  const pg=pager('lpage',all.length,PER),rows=all.slice((S.lpage-1)*PER,S.lpage*PER),v=V.id,st=l=>chip(l.active?'Active':'Inactive'),par=l=>l.parent?esc(lname(l.parent)):'<span class="muted">Top level</span>';
+  const acts=l=>v==='C'?`<div class="row-actions"><button class="btn btn-ghost btn-sm" data-act="editLoc" data-id="${l.id}">${ic('edit',14)}Edit</button><button class="btn btn-ghost btn-sm" data-act="delLoc" data-id="${l.id}">${ic('trash',14)}Delete</button></div>`:`<div class="row-actions"><button class="iconbtn" data-act="editLoc" data-id="${l.id}" aria-label="Edit ${esc(l.name)}">${ic('edit',16)}</button><button class="iconbtn" data-act="delLoc" data-id="${l.id}" aria-label="Delete ${esc(l.name)}">${ic('trash',16)}</button></div>`;
+  let head,body;
+  if(v==='A'){head='<th>Location</th><th>Type</th><th>Reports to</th><th>In-charge</th><th>Status</th><th><span class="sr-only">Actions</span></th>';
+    body=rows.map(l=>`<tr><td><div class="cell-main"><span class="tile">${TPRE[l.type]}</span><div><b>${esc(l.name)}</b><small>${l.code}</small></div></div></td><td>${tag(l.type)}</td><td>${par(l)}</td><td>${esc(l.incharge)}</td><td>${st(l)}</td><td>${acts(l)}</td></tr>`).join('')}
+  else if(v==='B'){head='<th>Code</th><th>Location</th><th>Type</th><th>Reports to</th><th>In-charge</th><th>Status</th><th><span class="sr-only">Actions</span></th>';
+    body=rows.map(l=>`<tr><td class="code">${l.code}</td><td><b>${esc(l.name)}</b></td><td>${tag(l.type)}</td><td>${par(l)}</td><td>${esc(l.incharge)}</td><td>${st(l)}</td><td>${acts(l)}</td></tr>`).join('')}
+  else{head='<th class="num">S. No.</th><th>Code</th><th>Location name</th><th>Type</th><th>Reports to</th><th>In-charge</th><th>Status</th><th>Actions</th>';
+    body=rows.map((l,i)=>`<tr><td class="num">${(S.lpage-1)*PER+i+1}</td><td class="code">${l.code}</td><td><b>${esc(l.name)}</b></td><td>${l.type}</td><td>${par(l)}</td><td>${esc(l.incharge)}</td><td>${st(l)}</td><td>${acts(l)}</td></tr>`).join('')}
+  return `<div class="card"><div class="table-wrap"><table class="tbl"><caption class="sr-only">Locations</caption><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>${pg}</div>`}
+function locationsScreen(){return `${V.head(t('locations'),`${fmt(locations.length)} locations: state, departments, districts, blocks, schools and warehouses`,`<button class="btn btn-primary" data-act="addLoc">${ic('plus',16)}Add location</button>`)}
+  <div class="toolbar filters">${search('lq','Search by location name, code or in-charge')}${V.id==='B'?'':sel('ltype',[['','All types'],...TYPES],'Filter by type')}${sel('lstatus',[['','All statuses'],'Active','Inactive'],'Filter by status')}</div>
+  <div id="region">${locRegion()}</div>`}
+function locForm(l){const e=l||{};const body=`<form id="f-loc" novalidate data-id="${e.id||''}"><div class="form-grid">
+  <div class="full">${fld('ln','Location name',inp('ln',e.name||'','required placeholder="East District, Block 5"'),'',true)}</div>
+  ${fld('lt','Location type',fsel('lt',[['','Select a type'],...TYPES],e.type||''),'',true)}
+  ${fld('lr','Reports to',`<select class="input" id="lr" name="lr">${locOpts(e.parent||HQ.id,e.id,'')}</select>`,'The parent location in the hierarchy.')}
+  ${fld('li','In-charge',inp('li',e.incharge||'','placeholder="Full name"'))}
+  ${fld('lx','Status',fsel('lx',['Active','Inactive'],e.active===false?'Inactive':'Active'))}
+  </div></form>`;
+  openOverlay(l?'Edit location':'Add location',body,`<button class="btn btn-ghost" data-act="close">Cancel</button><button class="btn btn-primary" type="submit" form="f-loc">${ic('check',16)}Save location</button>`,V.form.loc)}
+
+/* ---------- items & stock ---------- */
+function itemsRegion(){const q=S.iq.trim().toLowerCase(),rows=ITEMS.filter(i=>!q||(i.name+' '+i.code).toLowerCase().includes(q));if(!rows.length)return `<div class="card">${empty('No items match this search','Try a different item name or code.')}</div>`;
+  return `<div class="card"><div class="table-wrap"><table class="tbl"><caption class="sr-only">Stock at ${esc(lname(S.iloc))}</caption><thead><tr><th>Item code</th><th>Item</th><th>Unit</th><th class="num">Total quantity</th><th class="num">Dispatched</th><th class="num">Remaining quantity</th><th>Stock level</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>${rows.map(i=>{const s=stk(S.iloc,i.id),p=s.total?Math.round(s.rem/s.total*100):0;return `<tr><td class="code">${i.code}</td><td><b>${i.name}</b></td><td>${i.unit}</td><td class="num">${fmt(s.total)}</td><td class="num">${fmt(s.total-s.rem)}</td><td class="num"><b>${fmt(s.rem)}</b></td><td><div class="bar ${p<34?'low':''}" role="img" aria-label="${p}% remaining"><i style="width:${p}%"></i></div></td><td><div class="row-actions"><button class="btn btn-ghost btn-sm" data-act="newDispatch" data-from="${S.iloc}" ${s.rem?'':'disabled'}>${ic('truck',14)}Dispatch</button></div></td></tr>`}).join('')}</tbody></table></div></div>`}
+function itemsScreen(){return `${V.head(t('items'),`Total and remaining quantity of each item at ${esc(lname(S.iloc))}`,`<button class="btn btn-primary" data-act="newDispatch" data-from="${S.iloc}">${ic('truck',16)}Dispatch from here</button>`)}
+  <div class="toolbar filters">${search('iq','Search by item name or code')}<select class="input" data-model="iloc" aria-label="Location">${locOpts(S.iloc)}</select></div>
+  <div id="region">${itemsRegion()}</div>`}
+
+/* ---------- dispatch list ---------- */
+function dispatchRows(){const q=S.dq.trim().toLowerCase();return dispatches.filter(d=>(!S.dstatus||d.status===S.dstatus)&&(!q||(d.id+' '+d.qr+' '+lname(d.from)+' '+lname(d.to)+' '+d.vehicle).toLowerCase().includes(q)))}
+function timeline(d){const rec=d.status!=='In Transit';
+  return `<ol class="tl"><li class="done"><b>Dispatch number and QR code generated</b><small>${dfmt(d.date)}</small></li><li class="done"><b>Left ${esc(lname(d.from))}</b><small>${dfmt(d.date)}, vehicle ${esc(d.vehicle)}</small></li><li class="${rec?'done':'cur'}"><b>In transit</b><small>${rec?'Completed':overdue(d)?'Past delivery date of '+dfmt(d.due):'Deliver by '+dfmt(d.due)}</small></li><li class="${rec?'done':'todo'}"><b>Received at ${esc(lname(d.to))}</b><small>${rec?`${dfmt(d.recvDate)}, by ${esc(d.recvBy)}`:'Waiting for QR scan at the destination'}</small></li></ol>`}
+function dispatchDetail(d){const rec=d.status!=='In Transit';
+  return `<aside class="card dsp-detail" aria-live="polite"><header class="card-h"><h2>${d.id}</h2>${chip(d.status)}</header><div class="card-b dsp-d">
+  <div class="dsp-qr">${qrSvg(d)}<p><small>QR code no.</small><b class="mono">${d.qr}</b></p></div>
+  <div class="dsp-info">${route(LOC[d.from],LOC[d.to])}<dl class="kv"><dt>Vehicle no.</dt><dd class="mono">${esc(d.vehicle)}</dd><dt>Driver</dt><dd>${esc(d.driver)}</dd><dt>Dispatched on</dt><dd>${dfmt(d.date)}</dd><dt>Deliver by</dt><dd>${dfmt(d.due)}</dd></dl></div>
+  <div class="dsp-items"><h3>Items</h3><table class="mini"><thead><tr><th>Item</th><th class="num">Dispatched</th><th class="num">Received</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${IT[x.item].name}</td><td class="num">${fmt(x.qty)} ${IT[x.item].unit}</td><td class="num">${x.recv==null?'Pending':fmt(x.recv)}</td></tr>`).join('')}</tbody></table></div>
+  <div class="dsp-track"><h3>Tracking</h3>${timeline(d)}</div>
+  <div class="ed-foot dsp-acts"><button class="btn btn-ghost" data-act="print">${ic('printer',16)}Print slip</button>${rec?'':`<button class="btn btn-primary" data-act="toRecv" data-id="${d.id}">${ic('qr',16)}Receive this dispatch</button>`}</div></div></aside>`}
+function dispatchRegion(){const all=dispatchRows(),per=8;if(!all.length)return `<div class="card">${empty('No dispatches match this search','Try a different dispatch no., QR code no. or location, or remove a filter.')}</div>`;
+  const pg=pager('dpage',all.length,per),rows=all.slice((S.dpage-1)*per,S.dpage*per);let cur=rows.find(r=>r.id===S.sel)||rows[0];S.sel=cur.id;const A=V.id==='A';
+  const body=rows.map(d=>`<tr class="${d.id===cur.id?'sel':''}" data-act="selDispatch" data-id="${d.id}"><td class="code"><button class="linkbtn" data-act="selDispatch" data-id="${d.id}" aria-label="Open ${d.id}">${d.id}</button></td>${A?`<td><b>${esc(lname(d.from))}</b><small class="sub">to ${esc(lname(d.to))}</small></td>`:`<td>${esc(lname(d.from))}</td><td>${esc(lname(d.to))}</td>`}<td class="num">${d.items.length} / ${fmt(units(d))}</td>${A?'':`<td class="code">${esc(d.vehicle)}</td>`}<td class="code">${dfmt(d.date)}</td><td>${chip(d.status)}${overdue(d)?' '+chip('Overdue'):''}</td></tr>`).join('');
+  return `<div class="dsp"><div class="card dsp-table"><div class="table-wrap"><table class="tbl"><caption class="sr-only">Dispatches</caption><thead><tr><th>Dispatch no.</th>${A?'<th>From and to</th>':'<th>From</th><th>To</th>'}<th class="num">Items / qty</th>${A?'':'<th>Vehicle no.</th>'}<th>Dispatched on</th><th>Status</th></tr></thead><tbody>${body}</tbody></table></div>${pg}</div>${dispatchDetail(cur)}</div>`}
+function dispatchScreen(){return `${V.head(t('dispatch'),`${fmt(dispatches.length)} dispatches in the last 12 months. Select a row to see its QR code and tracking.`,`<button class="btn btn-primary" data-act="newDispatch">${ic('plus',16)}New dispatch</button>`)}
+  <div class="toolbar filters">${search('dq','Search by dispatch no., QR code no., location or vehicle')}${V.id==='B'?'':seg('dstatus',[['','All'],['In Transit','In transit'],['Received','Received'],['Short received','Short received']])}</div>
+  <div id="region">${dispatchRegion()}</div>`}
+
+/* ---------- new dispatch ---------- */
+const ND_STEPS=['From and to','Items and quantity','Vehicle and delivery','Check and generate'];
+function ndTotals(){const n=S.nd,rows=ITEMS.filter(i=>(n.qty[i.id]|0)>0);return {rows,units:rows.reduce((a,i)=>a+n.qty[i.id],0)}}
+function ndSummary(){const n=S.nd,{rows,units}=ndTotals();
+  return `${route(LOC[n.from],LOC[n.to])}<dl class="kv"><dt>Items selected</dt><dd>${rows.length}</dd><dt>Total quantity</dt><dd>${fmt(units)}</dd><dt>Vehicle no.</dt><dd>${esc(n.vehicle.toUpperCase())||'Not entered'}</dd><dt>Deliver by</dt><dd>${n.due?dfmt(fromIso(n.due)):'Not entered'}</dd></dl>${rows.length?`<ul class="sum-items">${rows.map(i=>`<li><span>${i.name}</span><b>${fmt(n.qty[i.id])} ${i.unit}</b></li>`).join('')}</ul>`:''}`}
+function partRoute(){const n=S.nd;return `<div class="form-grid">${fld('nd-from','From location',`<select class="input" id="nd-from" data-nd="from">${locOpts(n.from,null,'Select where the items leave from')}</select>`,'Any state, department, district, block, school or warehouse.',true)}${fld('nd-to','To location',`<select class="input" id="nd-to" data-nd="to">${locOpts(n.to,n.from,'Select where the items are delivered')}</select>`,'This location scans the QR code to receive the items.',true)}</div>`}
+function partItems(){const n=S.nd;if(!n.from)return `<p class="nd-hint">${ic('pin',18)}Select the From location first. Its stock appears here.</p>`;
+  return `<p class="nd-stockof">Stock at <b>${esc(lname(n.from))}</b></p><div class="table-wrap"><table class="tbl nd-items"><caption class="sr-only">Items available to dispatch</caption><thead><tr><th>Item</th><th class="num">Total quantity</th><th class="num">Remaining quantity</th><th class="num">Dispatch quantity</th><th class="num">Left after dispatch</th></tr></thead><tbody>${ITEMS.map(i=>{const s=stk(n.from,i.id),q=n.qty[i.id]||0;return `<tr><td><b>${i.name}</b><small class="sub">${i.code}, in ${i.unit.toLowerCase()}</small></td><td class="num">${fmt(s.total)}</td><td class="num"><b>${fmt(s.rem)}</b></td><td class="num"><input class="input qty" type="number" min="0" max="${s.rem}" step="1" inputmode="numeric" data-ndq="${i.id}" value="${q||''}" ${s.rem?'':'disabled'} aria-label="Dispatch quantity for ${i.name}" placeholder="${s.rem?'0':'No stock'}" ${q>s.rem?'aria-invalid="true"':''}></td><td class="num" data-left="${i.id}">${ndLeft(s.rem,q)}</td></tr>`}).join('')}</tbody></table></div><p class="err" id="nd-items-err" role="alert"></p>`}
+const ndLeft=(rem,q)=>q>rem?`<span class="over">${fmt(q-rem)} more than remaining</span>`:fmt(rem-q);
+function partTransport(){const n=S.nd;return `<div class="form-grid">
+  ${fld('nd-vehicle','Vehicle no.',`<input class="input upper" id="nd-vehicle" data-nd="vehicle" value="${esc(n.vehicle)}" placeholder="XX 01 AB 1234" autocomplete="off">`,'',true)}
+  ${fld('nd-due','Delivery date',`<input class="input" id="nd-due" type="date" data-nd="due" value="${n.due}" min="${iso(TODAY)}">`,'The date the items should reach the To location.',true)}
+  ${fld('nd-driver','Driver name',`<input class="input" id="nd-driver" data-nd="driver" value="${esc(n.driver)}" autocomplete="off">`,'',true)}
+  ${fld('nd-phone','Driver mobile number',`<input class="input" id="nd-phone" type="tel" inputmode="numeric" data-nd="phone" value="${esc(n.phone)}" placeholder="10-digit number">`)}
+  <div class="full">${fld('nd-remarks','Remarks',`<textarea class="input" id="nd-remarks" rows="2" data-nd="remarks" placeholder="Seal number, handling notes or anything the receiver should know">${esc(n.remarks)}</textarea>`)}</div></div>`}
+function partReview(){const n=S.nd,{rows,units}=ndTotals();return `${route(LOC[n.from],LOC[n.to])}<table class="mini"><thead><tr><th>Item</th><th class="num">Dispatch quantity</th><th class="num">Left at source</th></tr></thead><tbody>${rows.map(i=>`<tr><td>${i.name}</td><td class="num">${fmt(n.qty[i.id])} ${i.unit}</td><td class="num">${fmt(stk(n.from,i.id).rem-n.qty[i.id])}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td class="num">${fmt(units)}</td><td></td></tr></tbody></table>
+  <dl class="kv rev-kv"><dt>Vehicle no.</dt><dd class="mono">${esc(n.vehicle.toUpperCase())}</dd><dt>Driver</dt><dd>${esc(n.driver)}${n.phone?', '+esc(n.phone):''}</dd><dt>Deliver by</dt><dd>${n.due?dfmt(fromIso(n.due)):''}</dd>${n.remarks?`<dt>Remarks</dt><dd>${esc(n.remarks)}</dd>`:''}</dl>
+  <p class="nd-note">${ic('qr',18)}Generating creates the dispatch number and its QR code, and reduces the remaining quantity at the From location.</p>`}
+function ndFoot(){const s=S.nd.step;return `<div class="nd-foot">${s>1?`<button class="btn btn-ghost" data-act="ndBack">${ic('chevL',16)}Back</button>`:`<button class="btn btn-ghost" data-act="go" data-route="dispatch">Cancel</button>`}<span class="grow"></span>${s<4?`<button class="btn btn-primary" data-act="ndNext">Continue${ic('chevR',16)}</button>`:`<button class="btn btn-primary" data-act="ndCreate">${ic('qr',16)}Generate dispatch no. and QR code</button>`}</div>`}
+function ndDone(d){return `<section class="card slip"><div class="slip-top"><span class="slip-ok">${ic('check',22)}</span><div><p class="slip-l">Dispatch number generated</p><h2 class="slip-no mono">${d.id}</h2></div>${chip('In Transit')}</div>
+  <div class="slip-body"><div class="slip-qr">${qrSvg(d)}<p><small>QR code no.</small><b class="mono">${d.qr}</b></p><p class="hint">The receiving location scans this code, or types the QR code no. or dispatch no.</p></div>
+  <div class="slip-info">${route(LOC[d.from],LOC[d.to])}<table class="mini"><thead><tr><th>Item</th><th class="num">Quantity</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${IT[x.item].name}</td><td class="num">${fmt(x.qty)} ${IT[x.item].unit}</td></tr>`).join('')}</tbody></table>
+  <dl class="kv"><dt>Vehicle no.</dt><dd class="mono">${esc(d.vehicle)}</dd><dt>Driver</dt><dd>${esc(d.driver)}</dd><dt>Dispatched on</dt><dd>${dfmt(d.date)}</dd><dt>Deliver by</dt><dd>${dfmt(d.due)}</dd></dl></div></div>
+  <footer class="slip-foot"><button class="btn btn-ghost" data-act="print">${ic('printer',16)}Print dispatch slip</button><button class="btn btn-ghost" data-act="newDispatch">${ic('plus',16)}Create another</button><span class="grow"></span><button class="btn btn-ghost" data-act="go" data-route="dispatch">View all dispatches</button><button class="btn btn-primary" data-act="toRecv" data-id="${d.id}">${ic('qr',16)}Receive this dispatch</button></footer></section>`}
+function newDispatchScreen(){const n=S.nd;if(n.done){const d=dispatches.find(x=>x.id===n.done);if(d)return V.head('Dispatch created','Share the QR code with the vehicle. The receiving location needs it to accept the items.','')+ndDone(d)}
+  return V.newDispatch({steps:ND_STEPS,step:n.step,parts:[partRoute,partItems,partTransport,partReview],summary:()=>V.ndSummary?V.ndSummary():ndSummary(),foot:ndFoot})}
+function ndValid(step,show){const n=S.nd,errs=[],ids={1:['nd-from','nd-to'],2:['nd-items'],3:['nd-vehicle','nd-driver','nd-due']}[step]||[];
+  if(step===1){if(!n.from)errs.push(['nd-from','Select the location the items leave from.']);if(!n.to)errs.push(['nd-to','Select the location receiving the items.']);else if(n.to==n.from)errs.push(['nd-to','From and To can’t be the same location.'])}
+  if(step===2&&n.from){const over=ITEMS.filter(i=>(n.qty[i.id]||0)>stk(n.from,i.id).rem);if(over.length)errs.push(['nd-items',`Dispatch quantity is more than the remaining quantity for ${over.map(i=>i.name).join(', ')}.`]);else if(!ndTotals().rows.length)errs.push(['nd-items','Enter a dispatch quantity for at least one item.'])}
+  if(step===3){if(n.vehicle.replace(/\s/g,'').length<4)errs.push(['nd-vehicle','Enter the vehicle number.']);if(!n.driver.trim())errs.push(['nd-driver','Enter the driver’s name.']);if(!n.due)errs.push(['nd-due','Choose the delivery date.']);else if(n.due<iso(TODAY))errs.push(['nd-due','Delivery date can’t be in the past.'])}
+  if(show){ids.forEach(id=>setErr(id,''));errs.forEach(([id,m])=>setErr(id,m))}return errs}
+function ndFocus(id){const el=id==='nd-items'?$('.nd-items .qty:not([disabled])'):$('#'+id);if(el){el.focus();el.scrollIntoView({block:'center',behavior:'smooth'})}}
+
+/* ---------- receive ---------- */
+function findDispatch(code){const c=String(code).trim().toUpperCase();if(!c)return null;const parts=c.split('|');return dispatches.find(d=>parts.includes(d.id)||parts.includes(d.qr))||null}
+function rcvResult(){const r=S.rcv;
+  if(r.done){const d=dispatches.find(x=>x.id===r.done);return `<header class="card-h"><h2>Receipt recorded</h2>${chip(d.status)}</header><div class="card-b rcv-done"><span class="slip-ok">${ic('check',22)}</span><h3>${d.id} received at ${esc(lname(d.to))}</h3><p class="muted">${dfmt(d.recvDate)}, by ${esc(d.recvBy)}. Stock at this location has been updated.</p><table class="mini"><thead><tr><th>Item</th><th class="num">Dispatched</th><th class="num">Received</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${IT[x.item].name}</td><td class="num">${fmt(x.qty)}</td><td class="num">${fmt(x.recv)}</td></tr>`).join('')}</tbody></table><div class="ed-foot"><button class="btn btn-ghost" data-act="go" data-route="dispatch">View all dispatches</button><button class="btn btn-primary" data-act="rcvClear">${ic('qr',16)}Receive another</button></div></div>`}
+  if(r.found){const d=dispatches.find(x=>x.id===r.found);
+    if(d.status!=='In Transit')return `<header class="card-h"><h2>${d.id}</h2>${chip(d.status)}</header><div class="card-b rcv-done"><span class="slip-ok warn">${ic('alert',22)}</span><h3>This dispatch was already received</h3><p class="muted">Received at ${esc(lname(d.to))} on ${dfmt(d.recvDate)} by ${esc(d.recvBy)}. It can’t be received twice.</p><div class="ed-foot"><button class="btn btn-primary" data-act="rcvClear">Try another code</button></div></div>`;
+    return `<header class="card-h"><h2>${d.id}</h2>${chip(d.status)}${overdue(d)?chip('Overdue'):''}</header><div class="card-b stack">${route(LOC[d.from],LOC[d.to])}
+    <dl class="kv rcv-kv"><dt>QR code no.</dt><dd class="mono">${d.qr}</dd><dt>Vehicle no.</dt><dd class="mono">${esc(d.vehicle)}</dd><dt>Driver</dt><dd>${esc(d.driver)}</dd><dt>Dispatched on</dt><dd>${dfmt(d.date)}</dd><dt>Deliver by</dt><dd>${dfmt(d.due)}</dd></dl>
+    <div class="table-wrap"><table class="tbl rcv-items"><caption class="sr-only">Items in this dispatch</caption><thead><tr><th>Item</th><th>Unit</th><th class="num">Dispatched quantity</th><th class="num">Received quantity</th></tr></thead><tbody>${d.items.map(x=>`<tr><td><b>${IT[x.item].name}</b></td><td>${IT[x.item].unit}</td><td class="num">${fmt(x.qty)}</td><td class="num"><input class="input qty" type="number" min="0" max="${x.qty}" value="${x.qty}" data-rq="${x.item}" aria-label="Received quantity for ${IT[x.item].name}"></td></tr>`).join('')}</tbody></table></div><p class="err" id="rq-err" role="alert"></p>
+    <div class="form-grid">${fld('rb','Received by',inp('rb',ME.name))}${fld('rr','Remarks',inp('rr','','placeholder="Note any shortage or damage"'))}</div>
+    <div class="ed-foot"><button class="btn btn-ghost" data-act="rcvClear">Cancel</button><button class="btn btn-primary" data-act="rcvConfirm">${ic('check',16)}Confirm receipt</button></div></div>`}
+  return `<header class="card-h"><h2>Dispatch details</h2></header><div class="empty"><span class="empty-ic">${ic('qr',26)}</span><h3>No dispatch selected yet</h3><p>Scan the QR code on the dispatch slip, or type the QR code no. or dispatch no. The items and quantities appear here to check and confirm.</p></div>`}
+function receiveScreen(){const r=S.rcv,q=dispatches.filter(d=>d.status==='In Transit');
+  return `${V.head('Receive a dispatch','Scan the QR code on the dispatch slip, or enter the QR code no. or dispatch no.','')}
+  <div class="rcv"><section class="card rcv-scan"><header class="card-h"><h2>Scan QR code</h2></header><div class="card-b stack">
+    <div class="viewfinder ${r.scanning?'on':''}" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="vf-line"></span><p>${r.scanning?'Reading QR code…':'Hold the QR code inside the frame'}</p></div>
+    <button class="btn btn-primary btn-block" data-act="scan" ${r.scanning||!q.length?'disabled':''}>${ic('camera',16)}${r.scanning?'Scanning…':'Scan QR code'}</button>
+    <p class="hint">Demo: the scan reads the QR code of the newest dispatch in transit.</p>
+    <div class="or"><span>or enter the code</span></div>
+    <form id="f-find" novalidate class="stack">${fld('rc','QR code no. or dispatch no.',`<input class="input upper mono" id="rc" name="rc" value="${esc(r.code)}" placeholder="QR7K2M9XPA or DN-2611-0381" autocomplete="off">`)}<button class="btn btn-ghost btn-block" type="submit">${ic('search',16)}Find dispatch</button></form></div></section>
+  <section class="card rcv-result" id="rcv-result" aria-live="polite">${rcvResult()}</section>
+  <section class="card rcv-queue"><header class="card-h"><h2>Awaiting receipt</h2><span class="count">${q.length}</span></header><div class="qlist">${q.slice(0,7).map(d=>`<button class="qitem" data-act="rcvPick" data-id="${d.id}"><span><b class="mono">${d.id}</b><small>${esc(lname(d.from))} to ${esc(lname(d.to))}</small></span>${overdue(d)?chip('Overdue'):`<small>by ${dfmt(d.due)}</small>`}</button>`).join('')||'<p class="muted qnone">Nothing is in transit.</p>'}</div></section></div>`}
+
+/* ---------- users ---------- */
+function userRows(){const q=S.uq.trim().toLowerCase();return users.filter(u=>(!S.urole||u.role===S.urole)&&(!q||(u.name+' '+u.email+' '+lname(u.loc)).toLowerCase().includes(q)))}
+function usersRegion(){const all=userRows();if(!all.length)return `<div class="card">${empty('No users match this search','Try a different name or email, or choose another role.')}</div>`;
+  const cards=V.usersLayout==='cards',per=cards?12:10,pg=pager('upage',all.length,per),rows=all.slice((S.upage-1)*per,S.upage*per);
+  const tog=u=>sw(u.active,'toggleUser',u.id,`${u.name} is ${u.active?'active':'inactive'}`);
+  if(cards)return `<div class="ucards">${rows.map(u=>`<article class="card ucard"><div class="ucard-top"><span class="avatar">${initials(u.name)}</span><div><b>${esc(u.name)}</b><small>${u.email}</small></div></div><dl class="kv"><dt>Role</dt><dd>${u.role}</dd><dt>Location</dt><dd>${esc(lname(u.loc))}</dd><dt>Last sign-in</dt><dd>${u.last}</dd></dl><footer class="ucard-foot">${chip(u.active?'Active':'Inactive')}${tog(u)}</footer></article>`).join('')}</div><div class="card pager-card">${pg}</div>`;
+  return `<div class="card"><div class="table-wrap"><table class="tbl"><caption class="sr-only">Users</caption><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Location</th><th>Last sign-in</th><th>Status</th><th>Active</th></tr></thead><tbody>${rows.map(u=>`<tr><td><div class="cell-main"><span class="avatar">${initials(u.name)}</span><b>${esc(u.name)}</b></div></td><td class="code">${u.email}</td><td>${u.role}</td><td>${esc(lname(u.loc))}</td><td>${u.last}</td><td>${chip(u.active?'Active':'Inactive')}</td><td>${tog(u)}</td></tr>`).join('')}</tbody></table></div>${pg}</div>`}
+function usersScreen(){return `${V.head(t('users'),`${users.filter(u=>u.active).length} of ${users.length} accounts are active`,`<button class="btn btn-primary" data-act="addUser">${ic('plus',16)}Add user</button>`)}
+  <div class="toolbar filters">${search('uq','Search by name, email or location')}${V.id==='B'?'':sel('urole',[['','All roles'],...ROLES],'Filter by role')}</div>
+  <div id="region">${usersRegion()}</div>`}
+function userForm(){const body=`<form id="f-user" novalidate><div class="form-grid">
+  <div class="full">${fld('un','Full name',inp('un','','required autocomplete="off"'),'',true)}</div>
+  <div class="full">${fld('ue','Official email',inp('ue','','type="email" required placeholder="name@dispatch.example"'),'The sign-in link is sent here.',true)}</div>
+  ${fld('ur','Role',fsel('ur',ROLES,'Dispatch Officer'))}
+  ${fld('ud','Location',`<select class="input" id="ud" name="ud">${locOpts(HQ.id)}</select>`)}
+  <label class="check full"><input type="checkbox" id="uw" checked> Send a welcome email with sign-in steps</label></div></form>`;
+  openOverlay('Add user',body,`<button class="btn btn-ghost" data-act="close">Cancel</button><button class="btn btn-primary" type="submit" form="f-user">${ic('check',16)}Add user</button>`,V.form.user)}
+
+/* ---------- notices ---------- */
+function noticeRows(){return notices.filter(n=>!S.ntab||(S.ntab==='pub'?n.pub:!n.pub))}
+function noticeList(){const rows=noticeRows();if(!rows.length)return `<div class="empty"><span class="empty-ic">${ic('inbox',26)}</span><h3>No notices here yet</h3><p>Start a new notice and it will appear in this list.</p></div>`;
+  return rows.map(n=>`<div class="nitem ${n.id===S.nsel?'on':''}"><button class="nitem-open" data-act="nsel" data-id="${n.id}" ${n.id===S.nsel?'aria-current="true"':''}><b>${esc(n.title||'Untitled notice')}</b><small>${n.cat}, ${n.date}</small></button>${chip(n.pub?'Published':'Draft')}${sw(n.pub,'npub',n.id,`Publish “${n.title||'Untitled notice'}”`)}</div>`).join('')}
+function cmsScreen(){const rows=noticeRows();let n=notices.find(x=>x.id===S.nsel&&rows.includes(x))||rows[0]||null;if(n)S.nsel=n.id;
+  const editor=n?`<div class="editor">${fld('nt','Title',inp('nt',n.title,'placeholder="Notice title"'))}${fld('nc','Category',fsel('nc',NCATS,n.cat))}
+    <div class="fld"><label id="nb-l">Notice text</label><div><div class="ed-bar" role="toolbar" aria-label="Formatting"><button type="button" data-act="ed" data-v="bold" aria-label="Bold">B</button><button type="button" data-act="ed" data-v="italic" aria-label="Italic"><i>I</i></button><button type="button" data-act="ed" data-v="underline" aria-label="Underline"><u>U</u></button><button type="button" data-act="ed" data-v="insertUnorderedList" aria-label="Bulleted list">${ic('list',16)}</button><button type="button" data-act="ed" data-v="createLink" aria-label="Add link">${ic('link',16)}</button></div><div class="ed-body" id="nb" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="nb-l">${n.body}</div></div></div>
+    <div class="ed-foot"><span class="muted grow">${n.pub?'Visible to all portal users':'Only you and other admins can see this draft'}</span><button class="btn btn-ghost" data-act="nsave">Save draft</button><button class="btn btn-primary" data-act="npublish">${ic('megaphone',16)}Publish</button></div></div>`
+   :`<div class="empty"><span class="empty-ic">${ic('megaphone',26)}</span><h3>Select a notice to edit</h3><p>Or start a new one.</p></div>`;
+  return `${V.head(t('cms'),`${notices.filter(x=>x.pub).length} published, ${notices.filter(x=>!x.pub).length} in draft`,`<button class="btn btn-primary" data-act="nnew">${ic('plus',16)}New notice</button>`)}
+  ${V.id==='B'?'':`<div class="toolbar filters">${seg('ntab',[['','All notices'],['pub','Published'],['draft','Drafts']])}</div>`}
+  <div class="cms"><section class="card cms-list"><header class="card-h"><h2>Notices</h2></header><div id="region" class="nlist">${noticeList()}</div></section><section class="card cms-edit"><header class="card-h"><h2>${n?(n.pub?'Edit published notice':'Edit draft'):'Editor'}</h2>${n?chip(n.pub?'Published':'Draft'):''}</header><div class="card-b">${editor}</div></section></div>`}
+
+/* ---------- profile ---------- */
+function profileSecs(){return {
+ profile:`<section class="card sec-profile" id="sec-profile"><header class="card-h"><h2>Profile</h2></header><div class="card-b stack"><div class="pcard"><span class="avatar big">${initials(ME.name)}</span><div><h3>${ME.name}</h3><p class="muted">State Admin, State Headquarters</p><p class="muted">${ME.email}</p></div></div>
+   <form id="f-profile" novalidate><div class="form-grid">${fld('pn','Full name',inp('pn',ME.name))}${fld('pd','Designation',inp('pd','Deputy Director, Logistics'))}${fld('pm','Mobile number',inp('pm','','type="tel" placeholder="10-digit number"'),'Used for sign-in alerts.')}${fld('po','Location',inp('po','State Headquarters','disabled'))}<div class="full ed-foot"><button class="btn btn-primary" type="submit">${ic('check',16)}Save changes</button></div></div></form></div></section>`,
+ security:`<section class="card sec-security" id="sec-security"><header class="card-h"><h2>Change password</h2></header><div class="card-b"><form id="f-pass" novalidate class="stack">
+   ${fld('pc','Current password',`<div class="pw">${inp('pc','','type="password" autocomplete="current-password"')}<button type="button" data-act="pwToggle" data-id="pc">Show</button></div>`)}
+   ${fld('p1','New password',`<div class="pw">${inp('p1','','type="password" autocomplete="new-password" data-pw')}<button type="button" data-act="pwToggle" data-id="p1">Show</button></div><div class="meter" id="pwm" data-s="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="hint" id="pwl" aria-live="polite">Use 8 or more characters with upper and lower case, a number and a symbol.</p>`)}
+   ${fld('p2','Confirm new password',`<div class="pw">${inp('p2','','type="password" autocomplete="new-password"')}<button type="button" data-act="pwToggle" data-id="p2">Show</button></div>`)}
+   <div class="ed-foot"><button class="btn btn-primary" type="submit">${ic('lock',16)}Change password</button></div></form></div></section>`,
+ notify:`<section class="card sec-notify" id="sec-notify"><header class="card-h"><h2>Notification preferences</h2></header><div class="card-b"><ul class="prefs">
+   ${[['email','Email me when a dispatch is created to my location','One email per dispatch, with its dispatch no.'],['sms','Text me when a dispatch is overdue','Sent when it is still in transit after its delivery date'],['weekly','Weekly summary','Every Monday at 9 am'],['notice','Tell me when a notice is published','Includes notices published by other admins']].map(([k,l,s])=>`<li><div><b>${l}</b><small>${s}</small></div>${sw(S.prefs[k],'pref',k,l)}</li>`).join('')}
+   </ul><div class="ed-foot"><button class="btn btn-primary" data-act="savePrefs">${ic('check',16)}Save preferences</button></div></div></section>`}}
+function profileScreen(){const s=profileSecs();const body=V.id==='B'?`<div class="prof prof-one">${s[S.ptab]||s.profile}</div>`:`<div class="prof">${s.profile}<div class="prof-side">${s.security}${s.notify}</div></div>`;
+  return `${V.head(t('profile'),'Your account details, password and alerts','')}${body}`}
+function pwScore(v){if(!v)return 0;if(v.length<8)return 1;let n=1;if(/[a-z]/.test(v)&&/[A-Z]/.test(v))n++;if(/\d/.test(v))n++;if(/[^A-Za-z0-9]/.test(v))n++;return n}
+
+/* ---------- screens / render ---------- */
+function tabsFor(r){return {
+ dashboard:{k:'range',items:[[12,'Last 12 months'],[6,'Last 6 months']]},
+ locations:{k:'ltype',items:[['','All types'],...TYPES.map(x=>[x,TPLURAL[x]])]},
+ items:{k:'_',items:[['','Stock register']]},
+ dispatch:{k:'dstatus',items:[['','All dispatches'],['In Transit','In transit'],['Received','Received'],['Short received','Short received']]},
+ 'new-dispatch':{k:'_step',act:'ndStep',items:S.nd.done?[['x','Dispatch slip']]:ND_STEPS.map((l,i)=>[i+1,`${i+1}. ${l}`])},
+ receive:{k:'_',items:[['','Scan or enter code']]},
+ users:{k:'urole',items:[['','All roles'],...ROLES.map(x=>[x,x])]},
+ cms:{k:'ntab',items:[['','All notices'],['pub','Published'],['draft','Drafts']]},
+ profile:{k:'ptab',items:[['profile','Profile'],['security','Password'],['notify','Notifications']]}}[r]}
+function topActions(){const n=notifs().length;return `${langBtn()}<button class="iconbtn" data-act="notif" aria-label="Notifications, ${n} new" aria-haspopup="true">${ic('bell',20)}<span class="badge">${n}</span></button><button class="userbtn" data-act="umenu" aria-haspopup="true"><span class="avatar">${initials(ME.name)}</span><span class="userbtn-t"><b>${ME.name}</b><small>State Admin</small></span>${ic('chevD',14)}</button>`}
+function screen(){if(S.loading)return skeleton();if(V.screens&&V.screens[S.route])return V.screens[S.route]();switch(S.route){case 'locations':return locationsScreen();case 'items':return itemsScreen();case 'dispatch':return dispatchScreen();case 'new-dispatch':return newDispatchScreen();case 'receive':return receiveScreen();case 'users':return usersScreen();case 'cms':return cmsScreen();case 'profile':return profileScreen();default:return V.dashboard()}}
+const sig=e=>[e.dataset.act,e.dataset.k||'',e.dataset.v||'',e.dataset.id||''].join('|');
+function render(keep){const root=$('#app');
+  if(!S.authed){root.innerHTML=V.login(loginForm());document.title=`${t('signin')} | ${t('portal')}`;return}
+  root.innerHTML=V.shell(screen());document.title=`${t(S.route)} | ${t('portal')}`;
+  if(keep){const el=keep[0]==='#'?$(keep):$$('[data-act]').find(e=>sig(e)===keep);if(el)el.focus({preventScroll:true})}}
+const REG={locations:locRegion,items:itemsRegion,dispatch:dispatchRegion,users:usersRegion,cms:noticeList};
+function refresh(keep){const r=$('#region');const RF=(V.regions&&V.regions[S.route])||REG[S.route];if(r&&RF){r.innerHTML=RF();if(keep){const el=$$('[data-act]',r).find(e=>sig(e)===keep);if(el)el.focus({preventScroll:true})}}else render(keep)}
+
+/* ---------- routing ---------- */
+let lt;
+function enter(r){if(!ROUTES.includes(r))r='dashboard';if(!S.authed){S.next=r;render();return}
+  S.route=r;S.navOpen=false;closeOv();S.loading=true;render();window.scrollTo(0,0);clearTimeout(lt);lt=setTimeout(()=>{S.loading=false;render();const c=$('#content');if(c)c.focus({preventScroll:true})},380)}
+function go(r,patch){if(patch)Object.assign(S,patch,{lpage:1,dpage:1,upage:1});if(location.hash.slice(1)!==r)location.hash=r;else enter(r)}
+window.addEventListener('hashchange',()=>enter(location.hash.slice(1)||'dashboard'));
+
+/* ---------- overlays ---------- */
+let lastFocus=null;
+function openOverlay(title,body,foot,kind='modal'){lastFocus=document.activeElement;
+  $('#overlay').innerHTML=`<div class="scrim" data-act="close"></div><section class="ov ov-${kind}" role="dialog" aria-modal="true" aria-labelledby="ovt"><header class="ov-h"><h2 id="ovt">${title}</h2><button class="iconbtn" data-act="close" aria-label="Close">${ic('x',18)}</button></header><div class="ov-b">${body}</div><footer class="ov-f">${foot}</footer></section>`;
+  const f=$('#overlay .ov-b input:not([disabled]),#overlay .ov-b select,#overlay .ov-f .btn');if(f)f.focus()}
+let onYes=null;
+function confirmDlg(title,text,label,cb){lastFocus=document.activeElement;onYes=cb;
+  $('#overlay').innerHTML=`<div class="scrim" data-act="close"></div><section class="ov ov-confirm" role="alertdialog" aria-modal="true" aria-labelledby="ovt" aria-describedby="ovd"><header class="ov-h"><h2 id="ovt">${title}</h2></header><div class="ov-b"><p id="ovd">${text}</p></div><footer class="ov-f"><button class="btn btn-ghost" data-act="close">Keep it</button><button class="btn btn-danger" data-act="yes">${ic('trash',16)}${label}</button></footer></section>`;
+  $('#overlay .btn-ghost').focus()}
+function openPop(html){lastFocus=document.activeElement;$('#overlay').innerHTML=`<div class="pop-scrim" data-act="close"></div><div class="pop" role="dialog" aria-label="Menu">${html}</div>`;const f=$('#overlay .pop button');if(f)f.focus()}
+function closeOv(){const o=$('#overlay');if(o&&o.innerHTML){o.innerHTML='';if(lastFocus&&document.contains(lastFocus))lastFocus.focus({preventScroll:true})}}
+function toast(msg,kind='ok'){const el=document.createElement('div');el.className=`toast toast-${kind}`;el.setAttribute('role',kind==='err'?'alert':'status');
+  el.innerHTML=`${ic(kind==='err'?'alert':'check',18)}<span>${esc(msg)}</span><button class="iconbtn" aria-label="Dismiss" data-act="toastClose">${ic('x',14)}</button>`;$('#toasts').appendChild(el);setTimeout(()=>el.remove(),kind==='err'?6000:3800)}
+const setErr=(id,msg)=>{const e=$('#'+id+'-err'),i=$('#'+id);if(e)e.textContent=msg||'';if(i)i.setAttribute('aria-invalid',msg?'true':'false')};
+
+/* ---------- actions ---------- */
+const vact=n=>ACT[n]||(V.actions||{})[n];
+const ACT={
+ lang(){S.lang=S.lang==='en'?'hi':'en';document.documentElement.lang=S.lang;render('lang|||')},
+ go(d){go(d.route,d.k?{[d.k]:d.v}:null);if(d.then)setTimeout(()=>{const f=vact(d.then);if(f)f({})},460)},
+ set(d){if(d.k[0]==='_')return;S[d.k]=d.k==='range'?+d.v:d.v;S.lpage=S.dpage=S.upage=1;render(['set',d.k,d.v,''].join('|'))},
+ page(d){S[d.k]=+d.v;refresh(['page',d.k,d.v,''].join('|'))},
+ clear(){Object.assign(S,{lq:'',ltype:'',lstatus:'',iq:'',dq:'',dstatus:'',uq:'',urole:'',lpage:1,dpage:1,upage:1});render()},
+ skip(){const c=$('#content');if(c)c.focus()},
+ collapse(){S.collapsed=!S.collapsed;render('collapse|||')},
+ navOpen(){S.navOpen=!S.navOpen;render('navOpen|||')},
+ close(){closeOv()},
+ yes(){const cb=onYes;onYes=null;closeOv();if(cb)cb()},
+ toastClose(d,el){el.closest('.toast').remove()},
+ print(){try{window.print()}catch(e){toast('Printing isn’t available in this preview.','err')}},
+ capRefresh(){S.cap=genCap();const c=$('.captcha-code');if(c){c.textContent=S.cap;c.setAttribute('aria-label','Verification code: '+S.cap.split('').join(' '))}const i=$('#lc');if(i){i.value='';i.focus()}},
+ pwToggle(d,el){const i=$('#'+d.id);if(!i)return;const show=i.type==='password';i.type=show?'text':'password';el.textContent=show?'Hide':'Show'},
+ forgot(){openOverlay('Reset your password',`<form id="f-forgot" novalidate>${fld('fu','Username or official email',inp('fu','','required'),'We’ll send a reset link to the email registered for this account.',true)}</form>`,`<button class="btn btn-ghost" data-act="close">Cancel</button><button class="btn btn-primary" type="submit" form="f-forgot">Send reset link</button>`,'modal')},
+ notif(){openPop(`<h3>Notifications</h3>${notifs().map(n=>`<button class="pop-item" data-act="go" data-route="${n.route}" data-k="${n.k}" data-v="${n.v}">${ic(n.icon,18)}<span><b>${n.title}</b><small>${n.sub}</small></span></button>`).join('')}`)},
+ umenu(){openPop(`<h3>${ME.name}, State Admin</h3><button class="pop-item" data-act="go" data-route="profile">${ic('user',18)}<span>${t('profile')}</span></button><button class="pop-item" data-act="signout">${ic('logout',18)}<span>${t('signout')}</span></button>`)},
+ signout(){closeOv();S.authed=false;S.cap=genCap();render();toast('Signed out')},
+ addLoc(){locForm()},
+ editLoc(d){locForm(LOC[d.id])},
+ delLoc(d){const l=LOC[d.id];confirmDlg('Delete this location?',`${esc(l.name)} (${l.code}) will be removed and can no longer send or receive dispatches. This can’t be undone.`,'Delete location',()=>{locations.splice(locations.indexOf(l),1);refresh();toast('Location deleted')})},
+ selDispatch(d){S.sel=d.id;refresh(['selDispatch','','',d.id].join('|'))},
+ newDispatch(d){S.nd=blankNd();if(d&&d.from)S.nd.from=String(d.from);go('new-dispatch')},
+ ndNext(){const s=S.nd.step,e=ndValid(s,true);if(e.length){ndFocus(e[0][0]);return}S.nd.step=Math.min(4,s+1);render();window.scrollTo(0,0);const h=$('#content');if(h)h.focus({preventScroll:true})},
+ ndBack(){S.nd.step=Math.max(1,S.nd.step-1);render()},
+ ndStep(d){const to=+d.v;if(!to||S.nd.done)return;for(let s=1;s<to;s++){if(ndValid(s,false).length){S.nd.step=s;render();const e=ndValid(s,true);ndFocus(e[0][0]);toast('Complete this step first.','err');return}}S.nd.step=to;render(['ndStep','',d.v,''].join('|'))},
+ ndCreate(){const n=S.nd;let first=null;
+   if(V.oneForm){[1,2,3].forEach(s=>{const e=ndValid(s,true);if(e.length&&!first)first=e[0][0]});if(first){ndFocus(first);toast('Dispatch not created. Check the fields marked in red.','err');return}}
+   else for(let s=1;s<=3;s++){if(ndValid(s,false).length){S.nd.step=s;render();const e=ndValid(s,true);ndFocus(e[0][0]);return}}
+   const {rows}=ndTotals(),seq=dispatches.length+1,d={date:new Date(TODAY),due:fromIso(n.due),from:+n.from,to:+n.to,items:rows.map(i=>({item:i.id,qty:n.qty[i.id],recv:null})),vehicle:n.vehicle.trim().toUpperCase(),driver:n.driver.trim(),phone:n.phone,status:'In Transit',qr:genQr(),recvDate:null,recvBy:null,remarks:n.remarks,id:dno(TODAY,seq)};
+   rows.forEach(i=>{stk(d.from,i.id).rem-=n.qty[i.id]});dispatches.unshift(d);S.sel=d.id;S.dpage=1;
+   activity.unshift({who:ME.name,what:`dispatched ${fmt(units(d))} units from ${lname(d.from)} to ${lname(d.to)}`,when:'Just now',icon:'truck'});
+   n.done=d.id;render();window.scrollTo(0,0);toast(`Dispatch ${d.id} created`)},
+ toRecv(d){S.rcv={found:d.id,done:null,err:'',scanning:false,code:d.id};go('receive')},
+ scan(){const q=V.scanPool?V.scanPool():dispatches.filter(d=>d.status==='In Transit');if(!q.length)return;S.rcv={found:null,done:null,err:'',scanning:true,code:''};render();setTimeout(()=>{if(S.route!=='receive')return;S.rcv={found:q[0].id,done:null,err:'',scanning:false,code:q[0].qr};render();toast(`QR code read: ${q[0].qr}`)},1500)},
+ rcvPick(d){S.rcv={found:d.id,done:null,err:'',scanning:false,code:d.id};render(['rcvPick','','',d.id].join('|'));const r=$('#rcv-result');if(r)r.scrollIntoView({block:'nearest',behavior:'smooth'})},
+ rcvClear(){S.rcv={found:null,done:null,err:'',scanning:false,code:''};render();const i=$('#rc');if(i)i.focus()},
+ rcvConfirm(){const d=dispatches.find(x=>x.id===S.rcv.found);if(!d)return;let bad=false;const vals={};$$('[data-rq]').forEach(i=>{const x=d.items.find(y=>y.item==i.dataset.rq),v=parseInt(i.value,10);const ok=Number.isInteger(v)&&v>=0&&v<=x.qty;i.setAttribute('aria-invalid',!ok);if(!ok)bad=true;vals[x.item]=v});
+   if(bad){$('#rq-err').textContent='Received quantity must be between 0 and the dispatched quantity.';const b=$('[data-rq][aria-invalid=true]');if(b)b.focus();return}
+   d.items.forEach(x=>{x.recv=vals[x.item];const s=stk(d.to,x.item);s.total+=x.recv;s.rem+=x.recv});d.status=d.items.every(x=>x.recv===x.qty)?'Received':'Short received';d.recvDate=new Date(TODAY);d.recvBy=$('#rb').value.trim()||ME.name;d.remarks=$('#rr').value;
+   activity.unshift({who:d.recvBy,what:`received ${d.id} at ${lname(d.to)}`,when:'Just now',icon:'qr'});S.rcv={found:null,done:d.id,err:'',scanning:false,code:''};render();toast(d.status==='Received'?`${d.id} received in full`:`${d.id} received with a shortage`)},
+ addUser(){userForm()},
+ toggleUser(d){const u=users.find(x=>x.id==d.id);if(u.id===ME.id){toast('You can’t deactivate your own account. Ask another State Admin.','err');return}u.active=!u.active;refresh(['toggleUser','','',d.id].join('|'));toast(`${u.name} is now ${u.active?'active':'inactive'}`)},
+ nsel(d){S.nsel=+d.id;render(['nsel','','',d.id].join('|'))},
+ npub(d){const n=notices.find(x=>x.id==d.id);n.pub=!n.pub;render(['npub','','',d.id].join('|'));toast(n.pub?'Published':'Moved back to drafts')},
+ nnew(){const id=Math.max(...notices.map(n=>n.id))+1;notices.unshift({id,title:'',cat:'Circulars',date:dfmt(TODAY),pub:false,body:'<p></p>'});S.ntab=S.ntab==='pub'?'':S.ntab;S.nsel=id;render();const i=$('#nt');if(i)i.focus()},
+ nsave(){const n=readNotice();if(!n)return;n.pub=false;render('nsave|||');toast('Draft saved')},
+ npublish(){const n=readNotice();if(!n)return;if(!n.title.trim()){setErr('nt','Add a title before publishing.');$('#nt').focus();return}n.pub=true;render('npublish|||');toast('Published')},
+ ed(d){const b=$('#nb');if(!b)return;b.focus();if(d.v==='createLink'){const u=prompt('Link address','https://');if(u)document.execCommand('createLink',false,u)}else document.execCommand(d.v,false,null)},
+ pref(d,el){S.prefs[d.id]=!S.prefs[d.id];el.setAttribute('aria-checked',S.prefs[d.id])},
+ savePrefs(){toast('Preferences saved')}
+};
+function readNotice(){const n=notices.find(x=>x.id===S.nsel);if(!n)return null;n.title=$('#nt').value;n.cat=$('#nc').value;n.body=$('#nb').innerHTML;return n}
+
+const SUBMIT={
+ 'f-login'(f){const u=f.lu.value.trim(),p=f.lp.value,c=f.lc.value.trim().toUpperCase();let ok=true;
+   setErr('lu',u?'':'Enter your username.');setErr('lp',p?'':'Enter your password.');if(!u||!p)ok=false;
+   if(c!==S.cap){setErr('lc',c?'That code doesn’t match. Try the new one.':'Type the code shown.');if(c){S.cap=genCap();const cc=$('.captcha-code');cc.textContent=S.cap;f.lc.value=''}ok=false}else setErr('lc','');
+   if(!ok){const bad=$('[aria-invalid=true]',f);if(bad)bad.focus();return}
+   S.authed=true;const r=S.next||location.hash.slice(1)||'dashboard';S.next=null;if(location.hash.slice(1)===r||!location.hash&&r==='dashboard')enter(r);else location.hash=r;toast(`Signed in as ${ME.name}`)},
+ 'f-forgot'(f){if(!f.fu.value.trim()){setErr('fu','Enter your username or email.');f.fu.focus();return}closeOv();toast('Reset link sent to the registered email')},
+ 'f-loc'(f){const name=f.ln.value.trim(),type=f.lt.value;setErr('ln',name?'':'Enter the location name.');setErr('lt',type?'':'Select a location type.');if(!name||!type){(name?f.lt:f.ln).focus();return}
+   const id=f.dataset.id,parent=type==='State'?null:+f.lr.value||null;if(id){Object.assign(LOC[id],{name,type,parent,incharge:f.li.value.trim()||LOC[id].incharge,active:f.lx.value==='Active'})}
+   else{tcount[type]=(tcount[type]||0)+1;const l={id:Math.max(...locations.map(x=>x.id))+1,code:`${TPRE[type]}-${String(tcount[type]).padStart(3,'0')}`,name,type,parent,incharge:f.li.value.trim()||'Not assigned',active:f.lx.value==='Active'};locations.unshift(l);LOC[l.id]=l;S.lpage=1}
+   closeOv();refresh();toast('Location saved')},
+ 'f-find'(f){const code=f.rc.value.trim();S.rcv.code=code;if(!code){setErr('rc','Enter the QR code no. or dispatch no.');f.rc.focus();return}const d=findDispatch(code);
+   if(!d){setErr('rc','No dispatch has this number. Check the slip and try again.');f.rc.focus();return}S.rcv={found:d.id,done:null,err:'',scanning:false,code};render();const r=$('#rcv-result');if(r)r.scrollIntoView({block:'nearest',behavior:'smooth'})},
+ 'f-user'(f){const name=f.un.value.trim(),em=f.ue.value.trim(),okEm=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em);setErr('un',name?'':'Enter the user’s full name.');setErr('ue',okEm?'':'Enter a valid email address.');if(!name||!okEm){(name?f.ue:f.un).focus();return}
+   users.unshift({id:Math.max(...users.map(u=>u.id))+1,name,email:em,role:f.ur.value,loc:+f.ud.value,active:true,last:'Not signed in yet'});S.upage=1;closeOv();refresh();toast(`${name} added`)},
+ 'f-pass'(f){const c=f.pc.value,a=f.p1.value,b=f.p2.value;setErr('pc',c?'':'Enter your current password.');setErr('p1',pwScore(a)>=3?'':'Choose a stronger password: 8 or more characters with mixed case, a number or a symbol.');setErr('p2',a===b&&b?'':'The two new passwords don’t match.');
+   if(!c||pwScore(a)<3||a!==b){toast('Password not changed. Check the fields marked in red.','err');const bad=$('[aria-invalid=true]',f);if(bad)bad.focus();return}f.reset();pwMeter('');toast('Password changed')},
+ 'f-profile'(f){ME.name=f.pn.value.trim()||ME.name;toast('Profile saved')}
+};
+function pwMeter(v){const s=pwScore(v),m=$('#pwm'),l=$('#pwl');if(m)m.dataset.s=s;if(l)l.textContent=['Use 8 or more characters with upper and lower case, a number and a symbol.','Too short: use at least 8 characters.','Weak: add upper and lower case letters, a number and a symbol.','Fair: add one more kind of character.','Strong password.'][s]}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');
+  if(!e.target.closest('.mega-item'))$$('.mega-item.open').forEach(m=>{m.classList.remove('open');const b=$('button',m);if(b)b.setAttribute('aria-expanded','false')});
+  if(!el)return;if(el.tagName==='A')e.preventDefault();if(el.disabled)return;const fn=vact(el.dataset.act);if(fn){e.stopPropagation();fn(el.dataset,el)}});
+document.addEventListener('submit',e=>{e.preventDefault();const fn=SUBMIT[e.target.id];if(fn)fn(e.target)});
+document.addEventListener('input',e=>{const el=e.target,ds=el.dataset;
+  if(ds.model&&el.tagName==='INPUT'){S[ds.model]=el.value;S.lpage=S.dpage=S.upage=1;refresh()}
+  if('pw' in ds)pwMeter(el.value);
+  if(ds.nd&&el.tagName!=='SELECT'){S.nd[ds.nd]=el.value;if(el.id)setErr(el.id,'');const s=$('#nd-sum');if(s)s.innerHTML=(V.ndSummary?V.ndSummary():ndSummary())}
+  if(ds.ndq){const v=Math.max(0,parseInt(el.value,10)||0),rem=stk(S.nd.from,ds.ndq).rem;S.nd.qty[ds.ndq]=v;el.setAttribute('aria-invalid',v>rem);const c=$(`[data-left="${ds.ndq}"]`);if(c)c.innerHTML=ndLeft(rem,v);const s=$('#nd-sum');if(s)s.innerHTML=(V.ndSummary?V.ndSummary():ndSummary());const er=$('#nd-items-err');if(er)er.textContent=''}});
+document.addEventListener('change',e=>{const el=e.target,ds=el.dataset;
+  if(ds.model&&el.tagName==='SELECT'){S[ds.model]=el.value;S.lpage=S.dpage=S.upage=1;if(ds.model==='iloc')render();else refresh()}
+  if(ds.nd&&el.tagName==='SELECT'){if(ds.nd==='from'&&S.nd.from!==el.value){S.nd.qty={};if(S.nd.to===el.value)S.nd.to=''}S.nd[ds.nd]=el.value;render('#nd-'+ds.nd)}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){if($('#overlay').innerHTML)closeOv();else if(S.navOpen){S.navOpen=false;render()}}
+  if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.enter==='gsearch'){go('dispatch',{dq:e.target.value,dstatus:''})}
+  if(e.key==='Tab'){const ov=$('#overlay .ov,#overlay .pop');if(ov){const f=$$('button:not([disabled]),input:not([disabled]),select,textarea,[contenteditable],a[href]',ov);if(!f.length)return;const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}}});
+
+function start(){document.body.insertAdjacentHTML('beforeend','<div id="overlay"></div><div id="toasts" class="toasts" aria-live="polite"></div>');const h=location.hash.slice(1);if(ROUTES.includes(h))S.next=h;render()}
+
+window.C={stk,ITEMS,IT,LOC,lname,locOpts,fld,ndLeft,ndTotals,ndSummary,units,overdue,findDispatch,rcvResult,dispatchDetail,qrSvg,route,tag,empty,pager,itemsRegion,TPRE,TPLURAL,iso,fromIso,addDays,notifs,timeline,sw,sel,search,partRoute,partTransport,openOverlay,closeOv,confirmDlg,setErr,genQr,$,$$,esc,fmt,ic,t,S,NAV,navOn,ROUTES,TYPES,ME,HQ,CWH,initials,locations,dispatches,users,notices,activity,chip,seg,card,kpis,trend,typeBars,statusSplit,lineChart,barChart,donut,spark,tabsFor,topActions,langBtn,go,render,toast,start,dfmt,TODAY,ACT};
+})();
+
+</script>
+<script>
+(function(){
+const C=window.C,{ic,t,S,$,$$,esc,fmt}=C;
+const mark=`<span class="mark">${ic('box',20)}</span>`;
+const NAVD=[['dashboard','Dashboard','grid'],['dispatch','Board','truck'],['items','Stock','box'],['locations','Locations','pin'],['users','People','users'],['cms','Notices','megaphone']];
+S.bshow={overdue:8,transit:8,received:8,short:8};S.bloc='';
+const cols=[
+ {k:'overdue',title:'Overdue',sub:'Past the delivery date',tone:'od',test:d=>C.overdue(d)},
+ {k:'transit',title:'On the way',sub:'Due on or after today',tone:'tr',test:d=>d.status==='In Transit'&&!C.overdue(d)},
+ {k:'received',title:'Received',sub:'Confirmed in full',tone:'ok',test:d=>d.status==='Received'},
+ {k:'short',title:'Short received',sub:'Quantity differed',tone:'sh',test:d=>d.status==='Short received'}];
+const visible=()=>({'':['overdue','transit','received','short'],'In Transit':['overdue','transit'],'Received':['received'],'Short received':['short']}[S.dstatus]||['overdue','transit','received','short']);
+function rows(){const q=S.dq.trim().toLowerCase(),L=S.bloc;return C.dispatches.filter(d=>(!L||d.from==L||d.to==L)&&(!q||(d.id+' '+d.qr+' '+C.lname(d.from)+' '+C.lname(d.to)+' '+d.vehicle).toLowerCase().includes(q)))}
+function card(d){const od=C.overdue(d),late=od?Math.max(1,Math.round((C.TODAY-d.due)/864e5)):0,transit=d.status==='In Transit';
+ return `<button class="bcard" draggable="${transit}" data-act="openCard" data-id="${d.id}" data-card="${d.id}"><span class="bc-top"><b class="mono">${d.id}</b><span class="bc-due ${od?'late':''}">${transit?(od?late+(late>1?' days late':' day late'):'due '+C.dfmt(d.due)):'received '+C.dfmt(d.recvDate)}</span></span><span class="bc-route"><span>${esc(C.lname(d.from))}</span>${ic('arrowR',14)}<span>${esc(C.lname(d.to))}</span></span><span class="bc-meta"><span>${d.items.length} item${d.items.length>1?'s':''}, ${fmt(C.units(d))} units</span><span class="mono">${esc(d.vehicle)}</span></span></button>`}
+function board(){const all=rows(),show=visible();
+ return `<div class="board">${cols.filter(c=>show.includes(c.k)).map(c=>{const list=all.filter(c.test),n=S.bshow[c.k];
+  return `<section class="bcol bcol-${c.tone}" data-col="${c.k}" aria-label="${c.title}"><header><h2>${c.title}</h2><span class="count">${list.length}</span></header><p class="bcol-sub">${c.sub}</p><div class="bcards">${list.slice(0,n).map(card).join('')||`<p class="bempty">Nothing here${S.dq||S.bloc?' for this search':''}.</p>`}</div>${list.length>n?`<button class="btn btn-ghost btn-sm bmore" data-act="bMore" data-id="${c.k}">Show ${Math.min(8,list.length-n)} more (${list.length-n} left)</button>`:''}</section>`}).join('')}</div>`}
+
+/* drag and drop: drop an on-the-way card on Received to start receiving it */
+let dragId=null;
+document.addEventListener('dragstart',e=>{const b=e.target.closest&&e.target.closest('[data-card]');if(!b)return;dragId=b.dataset.card;e.dataTransfer.setData('text/plain',dragId);e.dataTransfer.effectAllowed='move';b.classList.add('drag')});
+document.addEventListener('dragend',()=>{dragId=null;$$('.drag,.drop').forEach(x=>x.classList.remove('drag','drop'))});
+document.addEventListener('dragover',e=>{const c=e.target.closest&&e.target.closest('[data-col]');if(c&&dragId){e.preventDefault();c.classList.add('drop')}});
+document.addEventListener('dragleave',e=>{const c=e.target.closest&&e.target.closest('[data-col]');if(c&&!c.contains(e.relatedTarget))c.classList.remove('drop')});
+document.addEventListener('drop',e=>{const c=e.target.closest&&e.target.closest('[data-col]');if(!c||!dragId)return;e.preventDefault();const id=dragId;dragId=null;c.classList.remove('drop');
+ const d=C.dispatches.find(x=>x.id===id);if(!d)return;
+ if(['received','short'].includes(c.dataset.col)){if(d.status!=='In Transit'){C.toast(`${d.id} is already received.`,'err');return}V.actions.receiveSheet({id})}
+ else C.toast('A dispatch moves forward only when the destination confirms receipt. Drop it on Received.','err')});
+/* cart tiles: highlight when quantity entered, filter by name */
+document.addEventListener('input',e=>{const el=e.target;if(el.dataset&&el.dataset.ndq){const t2=el.closest('.tile2');if(t2)t2.classList.toggle('on',(parseInt(el.value,10)||0)>0)}
+ if(el.id==='cat-q'){const q=el.value.trim().toLowerCase();$$('.tile2').forEach(x=>x.hidden=!!q&&!x.dataset.name.includes(q))}});
+
+window.V={id:'D',oneForm:true,form:{loc:'modal',user:'modal'},usersLayout:'table',
+actions:{
+ openCard(d){const x=C.dispatches.find(y=>y.id===d.id);if(!x)return;S.sel=x.id;C.openOverlay(x.id,C.dispatchDetail(x),'<button class="btn btn-ghost" data-act="close">Close</button>','drawer')},
+ bMore(d){S.bshow[d.id]+=8;const r=$('#region');if(r)r.innerHTML=board()},
+ receiveSheet(d){S.rcv={found:d.id,done:null,err:'',scanning:false,code:d.id};
+  const html=C.rcvResult().replace('data-act="rcvConfirm"','data-act="sheetConfirm"').replace(/data-act="rcvClear"/g,'data-act="close"');
+  C.openOverlay('Receive dispatch',`<section class="card sheetcard">${html}</section>`,'<button class="btn btn-ghost" data-act="close">Close</button>','wide')},
+ sheetConfirm(){C.ACT.rcvConfirm();if(S.rcv.done){C.closeOv();S.rcv={found:null,done:null,err:'',scanning:false,code:''}}},
+ qtyStep(d){const i=$(`[data-ndq="${d.id}"]`);if(!i)return;const rem=C.stk(S.nd.from,d.id).rem;let v=parseInt(i.value,10)||0;
+  v=d.v==='max'?rem:d.v==='clear'?0:Math.min(rem,Math.max(0,v+Number(d.v)));i.value=v||'';i.dispatchEvent(new Event('input',{bubbles:true}))}},
+regions:{dispatch:board},
+login(form){return `<div class="lg"><section class="lg-form"><div class="lg-box"><div class="brand lgb">${mark}<span>${t('portal')}</span></div><div class="lg-top"><h1>${t('signin')}</h1>${C.langBtn()}</div><p class="muted lg-sub">${t('dept')}</p>${form}</div></section>
+  <aside class="lg-art" aria-hidden="true"><div class="flowdiag"><div class="fd-node"><span>${ic('box',22)}</span><b>State Central Warehouse</b><small>Dispatch</small></div><div class="fd-link"><i></i><span class="fd-qr">${ic('qr',26)}</span><i></i></div><div class="fd-node"><span>${ic('pin',22)}</span><b>Government School, Ward 12</b><small>Receive</small></div></div><p>Every dispatch gets a number and a QR code. The receiving location scans it to confirm what arrived.</p></aside></div>`},
+shell(inner){const nav=NAVD.map(([r,l,i])=>`<a class="dn ${C.navOn(r)?'on':''}" href="#${r}" ${C.navOn(r)?'aria-current="page"':''}>${ic(i,16)}<span>${l}</span></a>`).join('');
+  return `<div class="d-app"><button class="skip" data-act="skip">Skip to content</button>
+  <header class="d-top"><div class="d-bar"><a class="brand" href="#dashboard">${mark}<span>${t('portal')}</span></a><div class="search gsearch">${ic('search',16)}<input class="input" type="search" placeholder="Search dispatch no., QR code or location" aria-label="Search dispatches" data-enter="gsearch"></div><span class="grow"></span><a class="btn btn-ghost" href="#receive">${ic('qr',16)}Scan</a><button class="btn btn-primary" data-act="newDispatch">${ic('plus',16)}New dispatch</button>${C.topActions()}</div><nav class="d-nav" aria-label="Main">${nav}</nav></header>
+  <main id="content" class="content" tabindex="-1">${inner}</main></div>`},
+head(title,sub,actions){return `<div class="ph"><div><h1>${title}</h1>${sub?`<p>${sub}</p>`:''}</div><div class="ph-a">${actions||''}</div></div>`},
+screens:{
+ dispatch(){return `${V.head('Dispatch board',`${fmt(C.dispatches.length)} dispatches in the last 12 months. Open a card for its QR code, or drag an on-the-way card to Received.`,'')}
+  <div class="toolbar filters">${C.search('dq','Search dispatch no., QR code no., location or vehicle')}<select class="input" data-model="bloc" aria-label="Filter by location"><option value="">All locations</option>${C.locOpts(S.bloc)}</select>${C.seg('dstatus',[['','All'],['In Transit','In transit'],['Received','Received'],['Short received','Short received']])}</div><div id="region">${board()}</div>`},
+ receive(){const r=S.rcv,q=C.dispatches.filter(d=>d.status==='In Transit'),open=r.found||r.done;
+  return `${V.head('Receive a dispatch','Scan the QR code on the slip, or type the QR code no. or dispatch no.','')}
+  <div class="rv"><section class="card stage"><div class="viewfinder big ${r.scanning?'on':''}" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="vf-line"></span><p>${r.scanning?'Reading QR code…':'Hold the QR code inside the frame'}</p></div>
+   <div class="stage-act"><button class="btn btn-primary btn-lg" data-act="scan" ${r.scanning||!q.length?'disabled':''}>${ic('camera',18)}${r.scanning?'Scanning…':'Scan QR code'}</button>
+   <form id="f-find" novalidate class="find"><div class="fld"><label for="rc" class="sr-only">QR code no. or dispatch no.</label><input class="input upper mono" id="rc" name="rc" value="${esc(r.code)}" placeholder="Or type the QR code no. or dispatch no." autocomplete="off"><p class="err" id="rc-err" role="alert"></p></div><button class="btn btn-ghost" type="submit">${ic('search',16)}Find</button></form></div></section>
+  <section class="rq"><h2>Waiting to be received <span class="count">${q.length}</span></h2><div class="qgrid">${q.slice(0,8).map(d=>`<button class="qcard" data-act="rcvPick" data-id="${d.id}"><b class="mono">${d.id}</b><span>${esc(C.lname(d.from))} to ${esc(C.lname(d.to))}</span>${C.overdue(d)?C.chip('Overdue'):`<small>by ${C.dfmt(d.due)}</small>`}</button>`).join('')}</div></section></div>
+  ${open?`<div class="sheet-scrim" data-act="rcvClear"></div><aside class="sheet card" id="rcv-result" aria-live="polite"><button class="iconbtn sheet-x" data-act="rcvClear" aria-label="Close">${ic('x',18)}</button>${C.rcvResult()}</aside>`:''}`}},
+ndSummary(){const n=S.nd,{rows,units}=C.ndTotals();
+  if(!rows.length)return `<p class="cart-empty">${ic('box',22)}<span>The cart is empty. Enter a quantity on any item to add it.</span></p>`;
+  return `<ul class="cart-lines">${rows.map(i=>`<li><span><b>${i.name}</b><small>${fmt(n.qty[i.id])} ${i.unit.toLowerCase()}</small></span><button class="iconbtn" data-act="qtyStep" data-id="${i.id}" data-v="clear" aria-label="Remove ${i.name}">${ic('x',14)}</button></li>`).join('')}</ul><dl class="kv cart-tot"><dt>Items</dt><dd>${rows.length}</dd><dt>Total quantity</dt><dd>${fmt(units)}</dd></dl>`},
+newDispatch({summary}){const n=S.nd;
+  const tiles=!n.from?`<p class="nd-hint">${ic('pin',18)}Choose the From location above. Its stock appears here as items you can add to the cart.</p>`:
+   `<div class="tiles nd-items">${C.ITEMS.map(i=>{const s=C.stk(n.from,i.id),q=n.qty[i.id]||0,p=s.total?Math.round(s.rem/s.total*100):0,dis=s.rem?'':'disabled';
+    return `<div class="tile2 ${q>0?'on':''} ${s.rem?'':'out'}" data-name="${esc(i.name.toLowerCase())}"><div class="t2-top"><b>${i.name}</b><small class="mono">${i.code}</small></div><div class="t2-stock"><b class="mono">${fmt(s.rem)}</b><span>remaining of ${fmt(s.total)} ${i.unit.toLowerCase()}</span></div><div class="bar ${p<34?'low':''}" role="img" aria-label="${p}% remaining"><i style="width:${p}%"></i></div>
+    <div class="stepper"><button type="button" class="iconbtn" data-act="qtyStep" data-id="${i.id}" data-v="-10" aria-label="Decrease ${i.name} by 10" ${dis}>−</button><input class="input qty" type="number" min="0" max="${s.rem}" step="1" inputmode="numeric" data-ndq="${i.id}" value="${q||''}" placeholder="${s.rem?'0':'None'}" ${dis} aria-label="Dispatch quantity for ${i.name}"><button type="button" class="iconbtn" data-act="qtyStep" data-id="${i.id}" data-v="10" aria-label="Increase ${i.name} by 10" ${dis}>+</button><button type="button" class="linkbtn" data-act="qtyStep" data-id="${i.id}" data-v="max" ${dis}>All</button></div>
+    <p class="t2-left">After dispatch: <b class="mono" data-left="${i.id}">${C.ndLeft(s.rem,q)}</b></p></div>`}).join('')}</div>`;
+  return `${V.head('New dispatch','Choose where it goes, add items to the cart, then generate the dispatch number and QR code.','')}
+  <section class="card routebar"><div class="card-b">${C.partRoute()}</div></section>
+  <div class="cart-grid"><section><div class="cat-head"><h2>${n.from?'Items at '+esc(C.lname(n.from)):'Items'}</h2><div class="search">${ic('search',16)}<input class="input" id="cat-q" type="search" placeholder="Filter items" aria-label="Filter items"></div></div>${tiles}<p class="err" id="nd-items-err" role="alert"></p></section>
+  <aside class="card cart"><header class="card-h"><h2>Dispatch cart</h2></header><div class="card-b"><div id="nd-sum">${summary()}</div><div class="cart-fields"><h3>Vehicle and delivery</h3>${C.partTransport()}</div></div><div class="cart-foot"><button class="btn btn-ghost" data-act="go" data-route="dispatch">Cancel</button><button class="btn btn-primary grow" data-act="ndCreate">${ic('qr',16)}Generate dispatch no. and QR code</button></div></aside></div>`},
+dashboard(){const D=C.dispatches,od=D.filter(C.overdue).sort((a,b)=>a.due-b.due),tr=D.filter(d=>d.status==='In Transit'),ks=C.kpis(),low=[];
+  C.locations.forEach(l=>{if(l.type!=='Warehouse')return;C.ITEMS.forEach(i=>{const s=C.stk(l.id,i.id);if(s.total&&s.rem/s.total<.34)low.push({l,i,s,p:s.rem/s.total})})});low.sort((a,b)=>a.p-b.p);
+  const fl={};D.forEach(d=>{const k=C.LOC[d.from].type+' to '+C.LOC[d.to].type;fl[k]=(fl[k]||0)+1});const fls=Object.entries(fl).sort((a,b)=>b[1]-a[1]).slice(0,6),fmax=fls[0][1],tt=C.trend();
+  return `<div class="brief-head"><div><h1>${od.length} dispatches need attention</h1><p>${tr.length} are on the road and ${od.length} are past their delivery date. Monday, 16 November 2026.</p></div><div class="ph-a"><button class="btn btn-ghost" data-act="go" data-route="dispatch">Open the board</button></div></div>
+  <div class="brief-grid">
+   <section class="card att"><header class="card-h"><h2>Overdue dispatches</h2><span class="count">${od.length}</span></header>${od.length?`<ul class="alist">${od.slice(0,6).map(d=>`<li><div><b class="mono">${d.id}</b><small>${esc(C.lname(d.from))} to ${esc(C.lname(d.to))}</small></div><span class="late">${Math.max(1,Math.round((C.TODAY-d.due)/864e5))} days late</span><button class="btn btn-ghost btn-sm" data-act="openCard" data-id="${d.id}">Open</button></li>`).join('')}</ul>`:`<div class="empty compact"><span class="empty-ic">${ic('check',22)}</span><h3>Nothing is overdue</h3></div>`}
+    <header class="card-h sub"><h2>Running low in warehouses</h2></header><ul class="alist">${low.slice(0,4).map(x=>`<li><div><b>${x.i.name}</b><small>${esc(x.l.name)}</small></div><div class="bar low" role="img" aria-label="${Math.round(x.p*100)}% remaining"><i style="width:${Math.round(x.p*100)}%"></i></div><button class="btn btn-ghost btn-sm" data-act="newDispatch" data-from="${x.l.id}" title="Dispatch from this warehouse">Dispatch</button></li>`).join('')||'<li><small class="muted">All warehouse stock is above one third.</small></li>'}</ul></section>
+   <section class="card month"><header class="card-h"><h2>This month</h2></header><ul class="mlist">${ks.map(k=>`<li><div><span>${k.label}</span><b>${k.value}</b><small>${k.note}</small></div>${C.spark(k.spark,k.c,110,40)}</li>`).join('')}</ul></section>
+   <section class="card trendc"><header class="card-h"><h2>Dispatched and received</h2>${C.seg('range',[[12,'12 months'],[6,'6 months']])}</header><div class="card-b">${C.lineChart({...tt,area:false,label:'Dispatches sent and received by month'})}<ul class="legend">${tt.series.map(s=>`<li><i style="background:var(--${s.c})"></i>${s.name}</li>`).join('')}</ul></div></section>
+   <section class="card flows"><header class="card-h"><h2>Where material flows</h2></header><ul class="flist">${fls.map(([k,v])=>`<li><span>${k}</span><div class="bar"><i style="width:${Math.round(v/fmax*100)}%"></i></div><b class="mono">${v}</b></li>`).join('')}</ul></section>
+  </div>`}};
+C.start();
+})();
+
+</script>
+</body>
+</html>
